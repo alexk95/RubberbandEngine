@@ -19,15 +19,18 @@
 
 using namespace rbeCalc;
 
-PointReference::PointReference(rbeCore::Point * _point, rbeCore::eAxis _axis)
-	: m_point(_point), m_axis(_axis) {}
+PointReference::PointReference(rbeCore::AbstractPoint * _point, rbeCore::eAxis _axis)
+	: m_point(_point), m_axis(_axis) {
+	
+	assert(m_point);
+}
 
-double PointReference::value(void) {
+coordinate_t PointReference::value(void) const {
 	switch (m_axis)
 	{
-	case rbeCore::X: return m_point->x();
-	case rbeCore::Y: return m_point->y();
-	case rbeCore::Z: return m_point->z();
+	case rbeCore::U: return m_point->u();
+	case rbeCore::V: return m_point->v();
+	case rbeCore::W: return m_point->w();
 	default:
 		assert(0);
 		return 0.;

@@ -13,24 +13,31 @@
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\rbeCalc\AbstractOperator.cpp" />
+    <ClCompile Include="src\rbeCalc\ParserAPI.cpp" />
     <ClCompile Include="src\rbeCalc\OperatorAdd.cpp" />
     <ClCompile Include="src\rbeCalc\OperatorDivide.cpp" />
     <ClCompile Include="src\rbeCalc\OperatorMultiply.cpp" />
     <ClCompile Include="src\rbeCalc\OperatorSubtract.cpp" />
+    <ClCompile Include="src\rbeCalc\PointDistanceOperator.cpp" />
     <ClCompile Include="src\rbeCalc\PointReference.cpp" />
+    <ClCompile Include="src\rbeCore\AbstractPoint.cpp" />
     <ClCompile Include="src\rbeCore\NumericPoint.cpp" />
     <ClCompile Include="src\rbeCore\Point.cpp" />
     <ClCompile Include="src\rbeCore\RubberbandEngine.cpp" />
+    <ClCompile Include="src\rbeCore\Step.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rbeCalc\AbstractItem.h" />
     <ClInclude Include="include\rbeCalc\AbstractOperator.h" />
+    <ClInclude Include="include\rbeCalc\ParserAPI.h" />
     <ClInclude Include="include\rbeCalc\OperatorAdd.h" />
     <ClInclude Include="include\rbeCalc\OperatorDivide.h" />
     <ClInclude Include="include\rbeCalc\OperatorMultiply.h" />
     <ClInclude Include="include\rbeCalc\OperatorSubtract.h" />
+    <ClInclude Include="include\rbeCalc\PointDistanceOperator.h" />
     <ClInclude Include="include\rbeCalc\PointReference.h" />
     <ClInclude Include="include\rbeCalc\VariableValue.h" />
+    <ClInclude Include="include\rbeCore\AbstractPoint.h" />
     <ClInclude Include="include\rbeCore\dataTypes.h" />
     <ClInclude Include="include\rbeCore\NumericPoint.h" />
     <ClInclude Include="include\rbeCore\Point.h" />

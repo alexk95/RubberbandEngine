@@ -16,21 +16,23 @@
 #include <rbeCalc/AbstractItem.h>
 
 namespace rbeCore {
-	class Point;
+	class AbstractPoint;
 }
 
 namespace rbeCalc {
 
 	class RBE_API_EXPORT PointReference : public AbstractItem {
 	public:
-		PointReference(rbeCore::Point * _point, rbeCore::eAxis _axis);
+		PointReference(rbeCore::AbstractPoint * _point, rbeCore::eAxis _axis);
 
-		virtual double value(void) override;
+		virtual coordinate_t value(void) const override;
+
+	protected:
+
+		rbeCore::AbstractPoint *	m_point;
+		rbeCore::eAxis				m_axis;
 
 	private:
-
-		rbeCore::Point *		m_point;
-		rbeCore::eAxis			m_axis;
 
 		PointReference() = delete;
 		PointReference(PointReference&) = delete;

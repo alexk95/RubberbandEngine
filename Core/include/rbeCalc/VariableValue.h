@@ -19,17 +19,15 @@ namespace rbeCalc {
 	class RBE_API_EXPORT VariableValue : public AbstractItem {
 	public:
 		VariableValue() {}
-		VariableValue(double _v) : m_value(_v) {}
+		VariableValue(coordinate_t _v) : m_value(_v) {}
 		virtual ~VariableValue() {}
 
-		virtual double value(void) override { return m_value; }
+		virtual coordinate_t value(void) const override { return m_value; }
 
-		void setValue(double _v) { m_value = _v; }
+		void setValue(coordinate_t _v) { m_value = _v; }
 
-	private:
-
-		double		m_value;
-
+	protected:
+		coordinate_t		m_value;
 	};
 
 }

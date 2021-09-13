@@ -19,10 +19,15 @@ namespace rbeCalc {
 
 	class RBE_API_EXPORT AbstractItem {
 	public:
-		virtual ~AbstractItem();
+		AbstractItem() {}
+		virtual ~AbstractItem() {}
 		
-		virtual double value(void) = 0;
+		virtual coordinate_t value(void) const = 0;
 
+	private:
+
+		AbstractItem(AbstractItem&) = delete;
+		AbstractItem& operator = (AbstractItem&) = delete;
 	};
 
 }

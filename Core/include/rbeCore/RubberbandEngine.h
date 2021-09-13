@@ -15,10 +15,58 @@
 // Project header
 #include <rbeCore/dataTypes.h>
 
-namespace rbe {
+// C++ header
+#include <string>
+
+namespace rbeCore {
+
+	class Point;
+	class Step;
+	class Connection;
+	class NumericPoint;
 
 	class RBE_API_EXPORT RubberbandEngine {
+	public:
+		RubberbandEngine(coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
+		virtual ~RubberbandEngine(); 
 
+		// #################################################################################################################
+
+		// Getter
+
+		NumericPoint * origin(void) { return m_origin; }
+		NumericPoint * current(void) { return m_current; }
+		Point * point(int _id);
+		
+		std::string debugInformation(void);
+
+		// #################################################################################################################
+
+		// Setter
+
+		void addPoint(Point * _point);
+
+		void replaceOrigin(coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
+
+		void updateCurrent(coordinate_t _currentU, coordinate_t _currentV, coordinate_t _currentW);
+
+		void setupFromJson(const char * _json);
+
+		void clear(void);
+
+	private:
+
+		struct d_data;
+		d_data *						m_data;
+
+		int								m_currentStep;
+		rbeCore::NumericPoint *			m_origin;
+		rbeCore::NumericPoint *			m_current;
+		
+
+		RubberbandEngine() = delete;
+		RubberbandEngine(RubberbandEngine&) = delete;
+		RubberbandEngine& operator = (RubberbandEngine&) = delete;
 	};
 
 }

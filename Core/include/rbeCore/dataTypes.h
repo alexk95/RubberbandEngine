@@ -14,21 +14,39 @@
 
 #define RBE_API_EXPORT __declspec(dllexport)
 
+#ifdef RBE_COORDINATE_TYPE_INT
+	typedef int coordinate_t;
+#else
+	typedef double coordinate_t;
+#endif // RBE_VALUE_TYPE_coordinate_t
+
+#ifdef _DEBUG
+	//! Requires: #include <cassert>
+#define rbeAssert(___expression, ___message) (void)((!!(___expression)) || (_wassert(_CRT_WIDE(#___expression) L"\n\n" _CRT_WIDE(___message), _CRT_WIDE(__FILE__), (unsigned)__LINE__), 0))
+#else
+	//! Requires: #include <cassert>
+#define rbeAssert(___expression, ___message)
+#endif // _DEBUG
+
+
 namespace rbeCore {
 
 	enum eAxis {
-		X,
-		Y,
-		Z
+		U,
+		V,
+		W
 	};
 
 	enum eAxisDistance {
-		All,
-		X,
-		Y,
-		Z,
-		XY,
-		XZ,
-		YZ
+		dAll,
+		dU,
+		dV,
+		dW,
+		dUV,
+		dUW,
+		dVW,
+		dVU,
+		dWU,
+		dWV
 	};
 }

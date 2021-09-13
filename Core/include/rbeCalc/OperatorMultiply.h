@@ -20,11 +20,9 @@ namespace rbeCalc {
 	class RBE_API_EXPORT OperatorMultiply : public AbstractOperator {
 	public:
 		OperatorMultiply(AbstractItem * _lhv, AbstractItem * _rhv);
+		virtual ~OperatorMultiply() {}
 
-		virtual double value(void) override;
-
-	private:
-
+		virtual coordinate_t value(void) const override;
 	};
 
 }

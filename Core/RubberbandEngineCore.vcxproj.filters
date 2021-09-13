@@ -57,6 +57,18 @@
     <ClCompile Include="src\rbeCore\NumericPoint.cpp">
       <Filter>Source Files\rbeCore</Filter>
     </ClCompile>
+    <ClCompile Include="src\rbeCore\AbstractPoint.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rbeCalc\PointDistanceOperator.cpp">
+      <Filter>Source Files\rbeCalc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rbeCalc\ParserAPI.cpp">
+      <Filter>Source Files\rbeCalc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rbeCore\Step.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rbeCalc\AbstractItem.h">
@@ -97,6 +109,15 @@
     </ClInclude>
     <ClInclude Include="include\rbeCore\NumericPoint.h">
       <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\AbstractPoint.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCalc\PointDistanceOperator.h">
+      <Filter>Header Files\rbeCalc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCalc\ParserAPI.h">
+      <Filter>Header Files\rbeCalc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

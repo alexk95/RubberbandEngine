@@ -18,8 +18,8 @@ using namespace rbeCalc;
 OperatorAdd::OperatorAdd(AbstractItem * _lhv, AbstractItem * _rhv)
 	: AbstractOperator(_lhv, _rhv) {}
 
-double OperatorAdd::value(void) {
-	double v = 0.;
+coordinate_t OperatorAdd::value(void) const {
+	coordinate_t v = 0.;
 	if (m_lhv) { v = m_lhv->value(); }
 	if (m_rhv) { v += m_rhv->value(); }
 	return v;

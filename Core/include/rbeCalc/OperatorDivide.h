@@ -20,11 +20,9 @@ namespace rbeCalc {
 	class RBE_API_EXPORT OperatorDivide : public AbstractOperator {
 	public:
 		OperatorDivide(AbstractItem * _lhv, AbstractItem * _rhv);
+		virtual ~OperatorDivide() {}
 
-		virtual double value(void) override;
-
-	private:
-
+		virtual coordinate_t value(void) const override;
 	};
 
 }

@@ -13,7 +13,7 @@
 #pragma once
 
 // Project header
-#include <rbeCore/dataTypes.h>
+#include <rbeCore/AbstractPoint.h>
 
 namespace rbeCalc {
 	class AbstractItem;
@@ -21,38 +21,40 @@ namespace rbeCalc {
 
 namespace rbeCore {
 
-	class RBE_API_EXPORT Point {
+	class RBE_API_EXPORT Point : public AbstractPoint {
 	public:
 
 		Point();
+		Point(rbeCalc::AbstractItem * _u, rbeCalc::AbstractItem * _v, rbeCalc::AbstractItem * _w);
+		virtual ~Point();
 
 		// #################################################################################################
 
 		// Setter
 
-		void setId(int _id) { m_id = _id; }
+		void replaceU(rbeCalc::AbstractItem * _u);
+
+		void replaceV(rbeCalc::AbstractItem * _v);
+
+		void replaceW(rbeCalc::AbstractItem * _w);
 
 		// #################################################################################################
 
 		// Getter
-
-		int id(void) const { return m_id; }
-
-		double x(void);
-
-		double y(void);
-
-		double z(void);
-
-		double distance(const Point& _other, eAxisDistance _axis);
 		
+		virtual coordinate_t u(void) const override;
+
+		virtual coordinate_t v(void) const override;
+
+		virtual coordinate_t w(void) const override;
+
 	private:
-		int			m_id;
-		double		m_x;
-		double		m_y;
-		double		m_z;
+		rbeCalc::AbstractItem *		m_u;
+		rbeCalc::AbstractItem *		m_v;
+		rbeCalc::AbstractItem *		m_w;
 
-
+		Point(Point&) = delete;
+		Point& operator = (Point&) = delete;
 	};
 
 }
