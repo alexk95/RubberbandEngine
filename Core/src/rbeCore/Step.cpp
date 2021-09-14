@@ -58,6 +58,10 @@ void Step::addPoint(Point * _p) {
 	m_points->points.insert_or_assign(_p->id(), _p);
 }
 
+void Step::setupFromJson(const std::string& _json) {
+
+}
+
 void Step::givePointOwnershipToEngine(RubberbandEngine * _engine) {
 	if (!m_pointsOwned) {
 		rbeAssert(0, "Point ownership already moved to engine @Step");

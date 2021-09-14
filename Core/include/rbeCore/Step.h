@@ -15,6 +15,9 @@
 // RBE header
 #include <rbeCore/dataTypes.h>
 
+// C++ header
+#include <string>
+
 namespace rbeCore {
 
 	class Point;
@@ -32,6 +35,8 @@ namespace rbeCore {
 		void setId(int _id) { m_id = _id; }
 
 		void addPoint(Point * _p);
+
+		void setupFromJson(const std::string& _json);
 
 		void givePointOwnershipToEngine(RubberbandEngine * _engine);
 
