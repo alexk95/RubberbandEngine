@@ -69,6 +69,15 @@
     <ClCompile Include="src\rbeCore\Step.cpp">
       <Filter>Source Files\rbeCore</Filter>
     </ClCompile>
+    <ClCompile Include="src\rbeCore\AbstractConnection.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rbeCore\LineConnection.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rbeCore\HistoryConnection.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rbeCalc\AbstractItem.h">
@@ -118,6 +127,18 @@
     </ClInclude>
     <ClInclude Include="include\rbeCalc\ParserAPI.h">
       <Filter>Header Files\rbeCalc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\jsonMember.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\AbstractConnection.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\LineConnection.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\HistoryConnection.h">
+      <Filter>Header Files\rbeCore</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

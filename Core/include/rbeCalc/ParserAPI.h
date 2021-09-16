@@ -21,6 +21,7 @@
 namespace rbeCore {
 	class RubberbandEngine;
 	class AbstractPoint;
+	class Step;
 }
 
 namespace rbeCalc {
@@ -29,9 +30,9 @@ namespace rbeCalc {
 
 	namespace ParserAPI {
 
-		RBE_API_EXPORT rbeCalc::AbstractItem * parseFormula(rbeCore::RubberbandEngine * _engine, const std::string& _string);
+		RBE_API_EXPORT rbeCalc::AbstractItem * parseFormula(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _string);
 	
-		RBE_API_EXPORT rbeCore::AbstractPoint * parsePoint(rbeCore::RubberbandEngine * _engine, const std::string& _str, rbeCore::eAxisDistance& _distance);
+		RBE_API_EXPORT rbeCore::AbstractPoint * parsePoint(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _str, rbeCore::eAxisDistance& _distance);
 
 	}
 }

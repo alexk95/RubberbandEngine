@@ -40,6 +40,8 @@ namespace rbeCore {
 
 		std::string debugInformation(const std::string& _prefix);
 
+		void addAsJsonObject(std::stringstream& _stream) const;
+
 	protected:
 
 	private:

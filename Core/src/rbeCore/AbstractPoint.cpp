@@ -12,6 +12,7 @@
 
 // RBE header
 #include <rbeCore/AbstractPoint.h>
+#include <rbeCore/jsonMember.h>
 
 // C++ header
 #include <cassert>
@@ -81,4 +82,9 @@ std::string AbstractPoint::debugInformation(const std::string& _prefix) {
 	ret.append(",\n").append(_prefix).append("}");
 	return ret;
 
+}
+
+void AbstractPoint::addAsJsonObject(std::stringstream& _stream) const {
+	_stream << "{\"" RBE_JSON_Point_ID "\":" << m_id << ",\"" RBE_JSON_Point_U "\":" << u() << ",\"" RBE_JSON_Point_V "\":" << v() <<
+		",\"" RBE_JSON_Point_W "\":" << w() << "}";
 }

@@ -21,6 +21,7 @@
 #include <rbeCalc/VariableValue.h>
 
 #include <rbeCore/Point.h>
+#include <rbeCore/Step.h>
 #include <rbeCore/NumericPoint.h>
 #include <rbeCore/RubberbandEngine.h>
 
@@ -31,10 +32,10 @@
 
 using namespace rbeCalc;
 
-PointDistanceOperator * parseDistanceOperator(rbeCore::RubberbandEngine * _engine, const std::string& _lhv, const std::string& _rhv) {
+PointDistanceOperator * parseDistanceOperator(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _lhv, const std::string& _rhv) {
 	rbeCore::eAxisDistance dL, dR;
-	rbeCore::AbstractPoint * pL = ParserAPI::parsePoint(_engine, _lhv, dL);
-	rbeCore::AbstractPoint * pR = ParserAPI::parsePoint(_engine, _rhv, dR);
+	rbeCore::AbstractPoint * pL = ParserAPI::parsePoint(_engine, _step, _lhv, dL);
+	rbeCore::AbstractPoint * pR = ParserAPI::parsePoint(_engine, _step, _rhv, dR);
 
 	if (dL == dR) {
 		return new PointDistanceOperator(pL, pR, dL, true);
@@ -86,44 +87,44 @@ PointDistanceOperator * parseDistanceOperator(rbeCore::RubberbandEngine * _engin
 	}
 }
 
-AbstractItem * ParserAPI::parseFormula(rbeCore::RubberbandEngine * _engine, const std::string& _string) {
+AbstractItem * ParserAPI::parseFormula(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _string) {
 	if (_string.empty()) { return new VariableValue(0); }
 
 	size_t idx = _string.rfind('+');
 	if (idx != std::string::npos) {
 		return new OperatorAdd(
-			parseFormula(_engine, _string.substr(0, idx)),
-			parseFormula(_engine,_string.substr(idx + 1))
+			parseFormula(_engine, _step, _string.substr(0, idx)),
+			parseFormula(_engine, _step, _string.substr(idx + 1))
 		);
 	}
 	idx = _string.rfind('-');
 	if (idx != std::string::npos) {
 		return new OperatorSubtract(
-			parseFormula(_engine, _string.substr(0, idx)),
-			parseFormula(_engine, _string.substr(idx + 1))
+			parseFormula(_engine, _step, _string.substr(0, idx)),
+			parseFormula(_engine, _step, _string.substr(idx + 1))
 		);
 	}
 	idx = _string.rfind('/');
 	if (idx != std::string::npos) {
 		return new OperatorDivide(
-			parseFormula(_engine, _string.substr(0, idx)),
-			parseFormula(_engine, _string.substr(idx + 1))
+			parseFormula(_engine, _step, _string.substr(0, idx)),
+			parseFormula(_engine, _step, _string.substr(idx + 1))
 		);
 	}
 	idx = _string.rfind('*');
 	if (idx != std::string::npos) {
 		return new OperatorMultiply(
-			parseFormula(_engine, _string.substr(0, idx)),
-			parseFormula(_engine, _string.substr(idx + 1))
+			parseFormula(_engine, _step, _string.substr(0, idx)),
+			parseFormula(_engine, _step, _string.substr(idx + 1))
 		);
 	}
 	idx = _string.rfind('>');
 	if (idx != std::string::npos) {
-		return parseDistanceOperator(_engine, _string.substr(0, idx), _string.substr(idx + 1));
+		return parseDistanceOperator(_engine, _step, _string.substr(0, idx), _string.substr(idx + 1));
 	}
 
 	rbeCore::eAxisDistance ax;
-	rbeCore::AbstractPoint * pt = parsePoint(_engine, _string, ax);
+	rbeCore::AbstractPoint * pt = parsePoint(_engine, _step, _string, ax);
 
 	if (pt) {
 		switch (ax)
@@ -147,7 +148,7 @@ AbstractItem * ParserAPI::parseFormula(rbeCore::RubberbandEngine * _engine, cons
 	}
 }
 
-rbeCore::AbstractPoint * ParserAPI::parsePoint(rbeCore::RubberbandEngine * _engine, const std::string& _str, rbeCore::eAxisDistance& _distance) {
+rbeCore::AbstractPoint * ParserAPI::parsePoint(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _str, rbeCore::eAxisDistance& _distance) {
 	if (_str.empty()) {
 		rbeAssert(0, "Provided point is empty @ParserAPI");
 		return nullptr;
@@ -219,7 +220,17 @@ rbeCore::AbstractPoint * ParserAPI::parsePoint(rbeCore::RubberbandEngine * _engi
 			return nullptr;
 		}
 
-		return _engine->point(pId);
+		if (_engine->hasPoint(pId)) {
+			return _engine->point(pId);
+		}
+		else if (_step) {
+			if (_step->hasPoint(pId)) {
+				return _step->point(pId);
+			}
+		}
+
+		rbeAssert(0, "Data error: Proivded point reference could not be resolved @ParserAPI");
+		return nullptr;
 	}
 	else {
 		return nullptr;

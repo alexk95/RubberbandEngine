@@ -15,6 +15,7 @@
 #include <rbeCore/Point.h>
 #include <rbeCore/NumericPoint.h>
 #include <rbeCore/Step.h>
+#include <rbeCore/jsonMember.h>
 
 // rapidjson
 #include <rapidjson/document.h>
@@ -46,6 +47,8 @@ RubberbandEngine::RubberbandEngine(coordinate_t _originU, coordinate_t _originV,
 
 RubberbandEngine::~RubberbandEngine() {
 	clear();
+	if (m_origin) { delete m_origin; } m_origin = nullptr;
+	if (m_current) { delete m_current; } m_current = nullptr;
 	delete m_data;
 }
 
@@ -60,6 +63,11 @@ Point * RubberbandEngine::point(int _id) {
 		return nullptr;
 	}
 	return p->second;
+}
+
+bool RubberbandEngine::hasPoint(int _id) {
+	auto p = m_data->points.find(_id);
+	return p != m_data->points.end();
 }
 
 std::string RubberbandEngine::debugInformation(void) {
@@ -86,7 +94,7 @@ std::string RubberbandEngine::debugInformation(void) {
 			ret.append(",\n\t\t");
 		}
 		if (s.second.first) {
-
+			ret.append(s.second.first->debugInformation("\t\t"));
 		}
 		else {
 			ret.append("{\n\t\t\t\"ID\": ");
@@ -97,6 +105,59 @@ std::string RubberbandEngine::debugInformation(void) {
 	}
 	ret.append("\n\t]\n}");
 	return ret;
+}
+
+std::string RubberbandEngine::connectionsJsonArray(void) {
+	std::stringstream stream;
+	stream << "[";
+	bool first{ true };
+	auto step = m_data->steps.find(m_currentStep);
+	if (step != m_data->steps.end()) {
+		if (step->second.first) {
+			step->second.first->addConnectionsToJsonArray(this, stream, first, false);
+		}
+	}
+	stream << "]";
+	return stream.str();
+}
+
+std::list<AbstractConnection *> RubberbandEngine::connectionsToDisplay(void) {
+	std::list<AbstractConnection *> ret;
+
+	auto step = m_data->steps.find(m_currentStep);
+	if (step != m_data->steps.end()) {
+		if (step->second.first) {
+			step->second.first->addConnectionsToList(ret, false);
+		}
+		else {
+			rbeAssert(0, "Fatal error: Current step was not created @RubberbandEngine");
+		}
+	}
+	else {
+		rbeAssert(0, "Data error: The active step does not exist @RubberbandEngine");
+	}
+
+	return ret;
+}
+
+bool RubberbandEngine::hasStep(int _id) {
+	auto s = m_data->steps.find(_id);
+	return s != m_data->steps.end();
+}
+
+Step * RubberbandEngine::step(int _id) {
+	auto s = m_data->steps.find(_id);
+	if (s == m_data->steps.end()) {
+		rbeAssert(0, "Step with the provided ID does not exist @RubberbandEngine");
+		return nullptr;
+	}
+	if (s->second.first) {
+		return s->second.first;
+	}
+	else {
+		rbeAssert(0, "The requested step was not activated yet @RubberbandEngine");
+		return nullptr;
+	}
 }
 
 // #################################################################################################################
@@ -138,30 +199,30 @@ void RubberbandEngine::setupFromJson(const char * _json) {
 	doc.Parse(_json);
 
 	if (!doc.IsObject()) {
-		rbeAssert(0, "Invalid JSON format: Document is not an object"); return;
+		rbeAssert(0, "Invalid JSON format: Document is not an object @RubberbandEngine"); return;
 	}
-	if (!doc.HasMember("RubberBandSteps")) {
-		rbeAssert(0, "Invalid JSON format: Document has no Steps"); return;
+	if (!doc.HasMember(RBE_JSON_DOC_RubberbandSteps)) {
+		rbeAssert(0, "Invalid JSON format: Document has no Steps @RubberbandEngine"); return;
 	}
-	if (!doc["RubberbandSteps"].IsArray()) {
-		rbeAssert(0, "Invalid JSON format: Steps data is not an array"); return;
+	if (!doc[RBE_JSON_DOC_RubberbandSteps].IsArray()) {
+		rbeAssert(0, "Invalid JSON format: Steps data is not an array @RubberbandEngine"); return;
 	}
 
-	auto stepsData = doc["RubberbandSteps"].GetArray();
+	auto stepsData = doc[RBE_JSON_DOC_RubberbandSteps].GetArray();
 	
 	for (rapidjson::SizeType i{ 0 }; i < stepsData.Size(); i++) {
 		if (!stepsData[i].IsObject()) {
-			rbeAssert(0, "Invalid JSON format: Step entry is not an object"); return;
+			rbeAssert(0, "Invalid JSON format: Step entry is not an object @RubberbandEngine"); return;
 		}
 		auto sObj = stepsData[i].GetObject();
 
-		if (!sObj.HasMember("Step")) {
-			rbeAssert(0, "Invalid JSON format: Step id is missing"); return;
+		if (!sObj.HasMember(RBE_JSON_STEP_Step)) {
+			rbeAssert(0, "Invalid JSON format: Step id is missing @RubberbandEngine"); return;
 		}
-		else if (!sObj["Step"].IsInt()) {
-			rbeAssert(0, "Invalid JSON format: Step id format is invalid"); return;
+		else if (!sObj[RBE_JSON_STEP_Step].IsInt()) {
+			rbeAssert(0, "Invalid JSON format: Step id format is invalid @RubberbandEngine"); return;
 		}
-		int id = sObj["Step"].GetInt();
+		int id = sObj[RBE_JSON_STEP_Step].GetInt();
 
 		rapidjson::Document sDoc;
 		sDoc.Set(sObj);
@@ -185,7 +246,47 @@ void RubberbandEngine::clear(void) {
 	}
 	m_data->points.clear();
 
-	if (m_origin) { delete m_origin; } m_origin = nullptr;
-	if (m_current) { delete m_current; } m_current = nullptr;
+	m_currentStep = 0;
+}
 
+void RubberbandEngine::activateStepOne(void) {
+	if (m_currentStep != 0) {
+		rbeAssert(0, "Data error: Current step is not 0 @RubberbandEngine");
+		return;
+	}
+	m_currentStep = 1;
+	auto stepData = m_data->steps.find(m_currentStep);
+	if (stepData == m_data->steps.end()) {
+		rbeAssert(0, "Data error: No step 1 found @RubberbandEngine");
+		return;
+	}
+
+	if (stepData->second.first) {
+		delete stepData->second.first;
+	}
+	
+	Step * newStep = new Step;
+	newStep->setupFromJson(this, stepData->second.second);
+	m_data->steps.insert_or_assign(m_currentStep, std::pair<Step *, std::string>(newStep, stepData->second.second));
+}
+
+void RubberbandEngine::activateNextStep(void) {
+	auto current = m_data->steps.find(m_currentStep);
+	if (current != m_data->steps.end()) {
+		current->second.first->givePointOwnershipToEngine(this);
+	}
+	m_currentStep++;
+	auto nextStep = m_data->steps.find(m_currentStep);
+	if (nextStep->second.first) {
+		delete nextStep->second.first;
+	}
+	
+	Step * newStep = new Step;
+	newStep->setupFromJson(this, nextStep->second.second);
+	m_data->steps.insert_or_assign(m_currentStep, std::pair<Step *, std::string>(newStep, nextStep->second.second));
+}
+
+bool RubberbandEngine::hasNextStep(void) {
+	auto s = m_data->steps.find(m_currentStep + 1);
+	return s != m_data->steps.end();
 }

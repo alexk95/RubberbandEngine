@@ -17,12 +17,13 @@
 
 // C++ header
 #include <string>
+#include <list>
 
 namespace rbeCore {
 
 	class Point;
 	class Step;
-	class Connection;
+	class AbstractConnection;
 	class NumericPoint;
 
 	class RBE_API_EXPORT RubberbandEngine {
@@ -35,10 +36,24 @@ namespace rbeCore {
 		// Getter
 
 		NumericPoint * origin(void) { return m_origin; }
+		
 		NumericPoint * current(void) { return m_current; }
+
 		Point * point(int _id);
 		
+		bool hasPoint(int _id);
+		
+		int currentStep(void) const { return m_currentStep; }
+		
+		bool hasStep(int _id);
+
+		Step * step(int _id);
+
 		std::string debugInformation(void);
+
+		std::string connectionsJsonArray(void);
+
+		std::list<AbstractConnection *> connectionsToDisplay(void);
 
 		// #################################################################################################################
 
@@ -54,6 +69,12 @@ namespace rbeCore {
 
 		void clear(void);
 
+		void activateStepOne(void);
+
+		void activateNextStep(void);
+
+		bool hasNextStep(void);
+		
 	private:
 
 		struct d_data;

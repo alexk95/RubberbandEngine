@@ -21,6 +21,9 @@
     <ClCompile Include="src\rbeCalc\PointDistanceOperator.cpp" />
     <ClCompile Include="src\rbeCalc\PointReference.cpp" />
     <ClCompile Include="src\rbeCore\AbstractPoint.cpp" />
+    <ClCompile Include="src\rbeCore\AbstractConnection.cpp" />
+    <ClCompile Include="src\rbeCore\HistoryConnection.cpp" />
+    <ClCompile Include="src\rbeCore\LineConnection.cpp" />
     <ClCompile Include="src\rbeCore\NumericPoint.cpp" />
     <ClCompile Include="src\rbeCore\Point.cpp" />
     <ClCompile Include="src\rbeCore\RubberbandEngine.cpp" />
@@ -38,7 +41,11 @@
     <ClInclude Include="include\rbeCalc\PointReference.h" />
     <ClInclude Include="include\rbeCalc\VariableValue.h" />
     <ClInclude Include="include\rbeCore\AbstractPoint.h" />
+    <ClInclude Include="include\rbeCore\AbstractConnection.h" />
     <ClInclude Include="include\rbeCore\dataTypes.h" />
+    <ClInclude Include="include\rbeCore\HistoryConnection.h" />
+    <ClInclude Include="include\rbeCore\jsonMember.h" />
+    <ClInclude Include="include\rbeCore\LineConnection.h" />
     <ClInclude Include="include\rbeCore\NumericPoint.h" />
     <ClInclude Include="include\rbeCore\Point.h" />
     <ClInclude Include="include\rbeCore\RubberbandEngine.h" />
