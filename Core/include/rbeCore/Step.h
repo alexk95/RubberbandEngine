@@ -61,6 +61,8 @@ namespace rbeCore {
 
 		bool mayEndWithout(void) const { return m_mayEndWithout; }
 
+		bool hasPointOwnership(void) const { return m_pointsOwned; }
+
 		eProjection projection(void) const { return m_projection; }
 
 		Point * point(int _id);

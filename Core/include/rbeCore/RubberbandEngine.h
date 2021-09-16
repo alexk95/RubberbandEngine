@@ -18,6 +18,7 @@
 // C++ header
 #include <string>
 #include <list>
+#include <map>
 
 namespace rbeCore {
 
@@ -55,6 +56,8 @@ namespace rbeCore {
 
 		std::list<AbstractConnection *> connectionsToDisplay(void);
 
+		std::map<int, Point *>& points(void);
+
 		// #################################################################################################################
 
 		// Setter
@@ -75,6 +78,8 @@ namespace rbeCore {
 
 		bool hasNextStep(void);
 		
+		void applyCurrentStep(void);
+
 	private:
 
 		struct d_data;

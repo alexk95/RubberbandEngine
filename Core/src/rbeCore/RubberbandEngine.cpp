@@ -140,6 +140,10 @@ std::list<AbstractConnection *> RubberbandEngine::connectionsToDisplay(void) {
 	return ret;
 }
 
+std::map<int, Point *>& RubberbandEngine::points(void) {
+	return m_data->points;
+}
+
 bool RubberbandEngine::hasStep(int _id) {
 	auto s = m_data->steps.find(_id);
 	return s != m_data->steps.end();
@@ -273,7 +277,9 @@ void RubberbandEngine::activateStepOne(void) {
 void RubberbandEngine::activateNextStep(void) {
 	auto current = m_data->steps.find(m_currentStep);
 	if (current != m_data->steps.end()) {
-		current->second.first->givePointOwnershipToEngine(this);
+		if (current->second.first->hasPointOwnership()) {
+			current->second.first->givePointOwnershipToEngine(this);
+		}
 	}
 	m_currentStep++;
 	auto nextStep = m_data->steps.find(m_currentStep);
@@ -289,4 +295,19 @@ void RubberbandEngine::activateNextStep(void) {
 bool RubberbandEngine::hasNextStep(void) {
 	auto s = m_data->steps.find(m_currentStep + 1);
 	return s != m_data->steps.end();
+}
+
+void RubberbandEngine::applyCurrentStep(void) {
+	auto s = m_data->steps.find(m_currentStep);
+	if (s == m_data->steps.end()) {
+		rbeAssert(0, "Data error: No active step @RubberbandEngine"); return;
+	}
+	if (s->second.first) {
+		if (s->second.first->hasPointOwnership()) {
+			s->second.first->givePointOwnershipToEngine(this);
+		}
+	}
+	else {
+		rbeAssert(0, "Data error: Current step was not created");
+	}
 }
