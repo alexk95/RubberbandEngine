@@ -62,23 +62,23 @@ namespace rbeCore {
 
 		// Setter
 
-		void addPoint(Point * _point);
-
-		void replaceOrigin(coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
-
-		void updateCurrent(coordinate_t _currentU, coordinate_t _currentV, coordinate_t _currentW);
-
-		void setupFromJson(const char * _json);
-
-		void clear(void);
-
-		void activateStepOne(void);
-
-		void activateNextStep(void);
-
 		bool hasNextStep(void);
+
+		virtual void addPoint(Point * _point);
+
+		virtual void replaceOrigin(coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
+
+		virtual void updateCurrent(coordinate_t _currentU, coordinate_t _currentV, coordinate_t _currentW);
+
+		virtual void setupFromJson(const char * _json);
+
+		virtual void clear(void);
+
+		virtual void activateStepOne(void);
+
+		virtual void activateNextStep(void);
 		
-		void applyCurrentStep(void);
+		virtual void applyCurrentStep(void);
 
 	private:
 
@@ -89,7 +89,6 @@ namespace rbeCore {
 		rbeCore::NumericPoint *			m_origin;
 		rbeCore::NumericPoint *			m_current;
 		
-
 		RubberbandEngine() = delete;
 		RubberbandEngine(RubberbandEngine&) = delete;
 		RubberbandEngine& operator = (RubberbandEngine&) = delete;

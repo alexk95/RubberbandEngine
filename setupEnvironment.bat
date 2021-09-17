@@ -2,7 +2,6 @@
 REM This script requires the following environment variables to be set:
 REM 1. RUBBERBAND_ENGINE_ROOT
 REM 2. DEVENV_ROOT
-REM 3. QTDIR_ROOT
 
 REM Ensure that the setup will only be performed once
 if "%RUBBERBAND_ENGINE_ENV_DEFINED%"=="1" (
@@ -23,21 +22,19 @@ IF "%DEVENV_ROOT%" == "" (
 	goto END
 )
 
-IF "%QTDIR_ROOT%" == "" (
-	ECHO Please specify the following environment variables: QTDIR_ROOT
-	goto END
+IF "%R_JSON_ROOT%" == "" (
+	ECHO Setup R_JSON_ROOT
+	SET R_JSON_ROOT=%RUBBERBAND_ENGINE_ROOT%\Third_Party_Libraries\rapidjson
 )
-
-SET QTDIR=%QTDIR_ROOT%
-SET QDIR=%QTDIR%
 
 SET RUBBERBAND_ENGINE_CORE=%RUBBERBAND_ENGINE_ROOT%\Core
 
-SET RJSON_INCLUDE="%RUBBERBAND_ENGINE_ROOT%\Third_Party_Libraries\rapidjson\include"
+SET RUBBERBAND_ENGINE_OSG=%RUBBERBAND_ENGINE_ROOT%\osgWrapper
+
+SET RJSON_INCLUDE="%R_JSON_ROOT%\include"
 
 REM ##########################################################################################################
 
 ECHO Environment was set up successfully.
 
 :END
-

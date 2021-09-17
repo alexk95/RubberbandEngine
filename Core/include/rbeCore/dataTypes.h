@@ -12,7 +12,11 @@
 
 #pragma once
 
+#ifdef RUBBERBANDENGINECORE_EXPORTS
 #define RBE_API_EXPORT __declspec(dllexport)
+#else
+#define RBE_API_EXPORT __declspec(dllimport)
+#endif // RUBBERBANDENGINECORE_EXPORTS
 
 #ifdef RBE_COORDINATE_TYPE_INT
 	typedef int coordinate_t;
