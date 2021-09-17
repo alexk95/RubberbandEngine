@@ -78,6 +78,9 @@
     <ClCompile Include="src\rbeCore\HistoryConnection.cpp">
       <Filter>Source Files\rbeCore</Filter>
     </ClCompile>
+    <ClCompile Include="src\rbeCore\CircleConnection.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rbeCalc\AbstractItem.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files\rbeCore</Filter>
     </ClInclude>
     <ClInclude Include="include\rbeCore\HistoryConnection.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\CircleConnection.h">
       <Filter>Header Files\rbeCore</Filter>
     </ClInclude>
   </ItemGroup>

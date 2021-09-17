@@ -22,6 +22,7 @@
     <ClCompile Include="src\rbeCalc\PointReference.cpp" />
     <ClCompile Include="src\rbeCore\AbstractPoint.cpp" />
     <ClCompile Include="src\rbeCore\AbstractConnection.cpp" />
+    <ClCompile Include="src\rbeCore\CircleConnection.cpp" />
     <ClCompile Include="src\rbeCore\HistoryConnection.cpp" />
     <ClCompile Include="src\rbeCore\LineConnection.cpp" />
     <ClCompile Include="src\rbeCore\NumericPoint.cpp" />
@@ -42,6 +43,7 @@
     <ClInclude Include="include\rbeCalc\VariableValue.h" />
     <ClInclude Include="include\rbeCore\AbstractPoint.h" />
     <ClInclude Include="include\rbeCore\AbstractConnection.h" />
+    <ClInclude Include="include\rbeCore\CircleConnection.h" />
     <ClInclude Include="include\rbeCore\dataTypes.h" />
     <ClInclude Include="include\rbeCore\HistoryConnection.h" />
     <ClInclude Include="include\rbeCore\jsonMember.h" />

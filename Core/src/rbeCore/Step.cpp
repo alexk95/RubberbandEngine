@@ -18,6 +18,7 @@
 #include <rbeCore/AbstractConnection.h>
 #include <rbeCore/LineConnection.h>
 #include <rbeCore/HistoryConnection.h>
+#include <rbeCore/CircleConnection.h>
 
 #include <rbeCalc/AbstractItem.h>
 #include <rbeCalc/ParserAPI.h>
@@ -97,6 +98,9 @@ Step::~Step() {
 		for (auto p : m_data->points) {
 			delete p.second;
 		}
+	}
+	for (auto c : m_data->connections) {
+		delete c;
 	}
 	delete m_data;
 }
@@ -290,6 +294,10 @@ void Step::setupFromJson(RubberbandEngine * _engine, const std::string& _json) {
 		}
 		else if (connectionType == RBE_JSON_VALUE_ConnectionType_Circle) {
 
+			// Data
+			CircleConnection * newConnection = new CircleConnection;
+			newConnection->setIgnoreInHistory(ignoreConnectionInHistory);
+			m_data->connections.push_back(newConnection);
 		}
 		else if (connectionType == RBE_JSON_VALUE_ConnectionType_History) {
 			// Member
