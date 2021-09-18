@@ -58,6 +58,8 @@ namespace rbeCore {
 
 		std::map<int, Point *>& points(void);
 
+		std::string pointsJsonArray(void);
+
 		// #################################################################################################################
 
 		// Setter

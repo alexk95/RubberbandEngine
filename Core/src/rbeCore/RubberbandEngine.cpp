@@ -144,6 +144,27 @@ std::map<int, Point *>& RubberbandEngine::points(void) {
 	return m_data->points;
 }
 
+std::string RubberbandEngine::pointsJsonArray(void) {
+	std::string ret{ "[" };
+	bool first{ true };
+
+	for (auto pt : m_data->points) {
+		if (first) { first = false; }
+		else { ret.append(","); }
+		ret.append("{\"" RBE_JSON_Point_ID "\":");
+		ret.append(std::to_string(pt.second->id()));
+		ret.append(",\"" RBE_JSON_Point_U "\":");
+		ret.append(std::to_string(pt.second->u()));
+		ret.append(",\"" RBE_JSON_Point_V "\":");
+		ret.append(std::to_string(pt.second->v()));
+		ret.append(",\"" RBE_JSON_Point_W "\":");
+		ret.append(std::to_string(pt.second->w()));
+		ret.append("}");
+	}
+	ret.append("]");
+	return ret;
+}
+
 bool RubberbandEngine::hasStep(int _id) {
 	auto s = m_data->steps.find(_id);
 	return s != m_data->steps.end();

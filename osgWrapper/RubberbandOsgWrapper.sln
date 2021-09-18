@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osgWrapper", "osgWrapper.vcxproj", "{E42BCD5B-E9E3-4272-AE88-E387DB3DD031}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RubberbandOsgWrapper", "RubberbandOsgWrapper.vcxproj", "{E42BCD5B-E9E3-4272-AE88-E387DB3DD031}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {B115C053-D6C6-4296-848E-DCF8C5279C56}
+		SolutionGuid = {0F84B3C8-E640-471C-893B-F166CA733613}
 	EndGlobalSection
 EndGlobal

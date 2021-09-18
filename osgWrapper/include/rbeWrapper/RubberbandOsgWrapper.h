@@ -16,6 +16,9 @@
 #include <rbeWrapper/rbeOsgWrapperDatatypes.h>
 #include <rbeCore/RubberbandEngine.h>
 
+#include <osg/Array>
+#include <list>
+
 namespace osg {
 	class Geode;
 	class Group;
@@ -23,11 +26,11 @@ namespace osg {
 
 namespace rbeWrapper {
 
-	class RBE_OSG_API_EXPORT RubberbandOsgEngine : public rbeCore::RubberbandEngine {
+	class RBE_OSG_API_EXPORT RubberbandOsgWrapper : public rbeCore::RubberbandEngine {
 	public:
 
-		RubberbandOsgEngine(osg::Group * _parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
-		virtual ~RubberbandOsgEngine();
+		RubberbandOsgWrapper(osg::Group * _parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
+		virtual ~RubberbandOsgWrapper();
 
 		// ############################################################################################
 
@@ -68,6 +71,9 @@ namespace rbeWrapper {
 		void setLineColor(float _r, float _g, float _b) { m_r = _r; m_g = _g; m_b = _b; }
 
 		void setDepthTestActive(bool _isActive) { m_depthTest = _isActive; }
+
+	protected:
+		void calculateEdges(std::list<osg::Vec3>& _list);
 
 	private:
 

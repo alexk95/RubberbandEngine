@@ -21,7 +21,6 @@
 #include <rbeCore/AbstractPoint.h>
 
 // osg header
-#include <osg/Array>
 #include <osg/StateSet>
 #include <osg/Node>
 #include <osg/Geode>
@@ -35,57 +34,59 @@
 
 using namespace rbeCore;
 
-rbeWrapper::RubberbandOsgEngine::RubberbandOsgEngine(osg::Group * _parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW)
+rbeWrapper::RubberbandOsgWrapper::RubberbandOsgWrapper(osg::Group * _parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW)
 	: rbeCore::RubberbandEngine(_originU, _originV, _originW), m_parentGroup(_parentGroup), m_node(nullptr),
-	m_r(1.), m_g(0.), m_b(0.), m_depthTest(false), m_circleSegments(10)
+	m_r(1.), m_g(0.), m_b(0.), m_depthTest(false), m_circleSegments(100)
 {
 
 }
 
-rbeWrapper::RubberbandOsgEngine::~RubberbandOsgEngine() {
-
+rbeWrapper::RubberbandOsgWrapper::~RubberbandOsgWrapper() {
+	if (m_node) {
+		m_parentGroup->removeChild(m_node);
+	}
 }
 
 // ############################################################################################
 
 // Base class functions
 
-void rbeWrapper::RubberbandOsgEngine::addPoint(rbeCore::Point * _point) {
+void rbeWrapper::RubberbandOsgWrapper::addPoint(rbeCore::Point * _point) {
 
 	RubberbandEngine::addPoint(_point);
 }
 
-void rbeWrapper::RubberbandOsgEngine::replaceOrigin(coordinate_t _originU, coordinate_t _originV, coordinate_t _originW) {
+void rbeWrapper::RubberbandOsgWrapper::replaceOrigin(coordinate_t _originU, coordinate_t _originV, coordinate_t _originW) {
 	RubberbandEngine::replaceOrigin(_originU, _originV, _originW);
 	updateNode();
 }
 
-void rbeWrapper::RubberbandOsgEngine::updateCurrent(coordinate_t _currentU, coordinate_t _currentV, coordinate_t _currentW) {
+void rbeWrapper::RubberbandOsgWrapper::updateCurrent(coordinate_t _currentU, coordinate_t _currentV, coordinate_t _currentW) {
 	RubberbandEngine::updateCurrent(_currentU, _currentV, _currentW);
 	updateNode();
 }
 
-void rbeWrapper::RubberbandOsgEngine::setupFromJson(const char * _json) {
+void rbeWrapper::RubberbandOsgWrapper::setupFromJson(const char * _json) {
 	cleanupOsgData();
 	RubberbandEngine::setupFromJson(_json);
 }
 
-void rbeWrapper::RubberbandOsgEngine::clear(void) {
+void rbeWrapper::RubberbandOsgWrapper::clear(void) {
 	RubberbandEngine::clear();
 	cleanupOsgData();
 }
 
-void rbeWrapper::RubberbandOsgEngine::activateStepOne(void) {
+void rbeWrapper::RubberbandOsgWrapper::activateStepOne(void) {
 	RubberbandEngine::activateStepOne();
 	buildNode();
 }
 
-void rbeWrapper::RubberbandOsgEngine::activateNextStep(void) {
+void rbeWrapper::RubberbandOsgWrapper::activateNextStep(void) {
 	RubberbandEngine::activateNextStep();
 	buildNode();
 }
 
-void rbeWrapper::RubberbandOsgEngine::applyCurrentStep(void) {
+void rbeWrapper::RubberbandOsgWrapper::applyCurrentStep(void) {
 
 	RubberbandEngine::applyCurrentStep();
 }
@@ -94,115 +95,19 @@ void rbeWrapper::RubberbandOsgEngine::applyCurrentStep(void) {
 
 // Private functions
 
-void rbeWrapper::RubberbandOsgEngine::cleanupOsgData(void) {
+void rbeWrapper::RubberbandOsgWrapper::cleanupOsgData(void) {
 	if (m_node) {
 		m_parentGroup->removeChild(m_node);
 		m_node = nullptr;
 	}
 }
 
-void rbeWrapper::RubberbandOsgEngine::buildNode(void) {
+void rbeWrapper::RubberbandOsgWrapper::buildNode(void) {
 	cleanupOsgData();
 
 	// Read connections and create edges list
-	std::list<AbstractConnection *> connections = connectionsToDisplay();	
 	std::list<osg::Vec3> edgesList;
-
-	for (AbstractConnection * connection : connections) {
-		switch (connection->type())
-		{
-		case AbstractConnection::ctLine:
-		{
-			LineConnection * actualConnection = dynamic_cast<LineConnection *>(connection);
-			edgesList.push_back({ actualConnection->from()->u(), actualConnection->from()->v(), actualConnection->from()->w() });
-			edgesList.push_back({ actualConnection->to()->u(), actualConnection->to()->v(), actualConnection->to()->w() });
-		}
-		break;
-		case AbstractConnection::ctCircle:
-		{
-			CircleConnection * actualConnection = dynamic_cast<CircleConnection *>(connection);
-			coordinate_t midU = actualConnection->centerPoint()->u();
-			coordinate_t midV = actualConnection->centerPoint()->v();
-			coordinate_t midW = actualConnection->centerPoint()->w();
-			coordinate_t radius = actualConnection->radius();
-			CircleConnection::eCircleOrientation orientation = actualConnection->orientation();
-
-			bool hasLast{ false };
-			coordinate_t lU, lV, lW;
-
-			switch (orientation)
-			{
-			case rbeCore::CircleConnection::coUV:
-			{
-				for (int i = 0; i < m_circleSegments; i++)
-				{
-					if (hasLast) {
-						edgesList.push_back({ lU, lV, lW });
-					}
-
-					float theta = 2.f * 3.1415926f * float(i) / float(m_circleSegments);
-					float u = radius * cosf(theta);
-					float v = radius * sinf(theta);
-					
-					lU = midU + u;
-					lV = midV + v;
-					lW = midW;
-					hasLast = true;
-					edgesList.push_back({ lU, lV, lW });
-				}
-			}
-				break;
-			case rbeCore::CircleConnection::coUW:
-			{
-				for (int i = 0; i < m_circleSegments; i++)
-				{
-					if (hasLast) {
-						edgesList.push_back({ lU, lV, lW });
-					}
-
-					float theta = 2.f * 3.1415926f * float(i) / float(m_circleSegments);
-					float u = radius * cosf(theta);
-					float w = radius * sinf(theta);
-
-					lU = midU + u;
-					lV = midV;
-					lW = midW + w;
-					hasLast = true;
-					edgesList.push_back({ lU, lV, lW });
-				}
-			}
-				break;
-			case rbeCore::CircleConnection::coVW:
-			{
-				for (int i = 0; i < m_circleSegments; i++)
-				{
-					if (hasLast) {
-						edgesList.push_back({ lU, lV, lW });
-					}
-
-					float theta = 2.f * 3.1415926f * float(i) / float(m_circleSegments);
-					float v = radius * cosf(theta);
-					float w = radius * sinf(theta);
-
-					lU = midU;
-					lV = midV + v;
-					lW = midW + w;
-					hasLast = true;
-					edgesList.push_back({ lU, lV, lW });
-				}
-			}
-				break;
-			default:
-				rbeAssert(0, "Invalid circle orientation");
-				break;
-			}
-		}
-		break;
-		default:
-			rbeAssert(0, "Not implemented connection type");
-			break;
-		}
-	}
+	calculateEdges(edgesList);
 
 	// Create array
 	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(edgesList.size());
@@ -257,6 +162,151 @@ void rbeWrapper::RubberbandOsgEngine::buildNode(void) {
 	m_parentGroup->addChild(m_node);
 }
 
-void rbeWrapper::RubberbandOsgEngine::updateNode(void) {
+void rbeWrapper::RubberbandOsgWrapper::updateNode(void) {
+	osg::Geometry * geometry = dynamic_cast<osg::Geometry *>(m_node->getDrawable(0));
+	if (geometry) {
+		// Read connections and create edges list
+		std::list<osg::Vec3> edgesList;
+		calculateEdges(edgesList);
+
+		// Create array
+		osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(edgesList.size());
+		size_t ct{ 0 };
+		for (auto pt : edgesList) {
+			vertices->at(ct++).set(pt);
+		}
+
+		geometry->setVertexArray(vertices);
+	}
+	else {
+		assert(0);
+	}
+}
+
+void rbeWrapper::RubberbandOsgWrapper::calculateEdges(std::list<osg::Vec3>& _list) {
+	std::list<AbstractConnection *> connections = connectionsToDisplay();
+	for (AbstractConnection * connection : connections) {
+		switch (connection->type())
+		{
+		case AbstractConnection::ctLine:
+		{
+			LineConnection * actualConnection = dynamic_cast<LineConnection *>(connection);
+			_list.push_back({ actualConnection->from()->u(), actualConnection->from()->v(), actualConnection->from()->w() });
+			_list.push_back({ actualConnection->to()->u(), actualConnection->to()->v(), actualConnection->to()->w() });
+		}
+		break;
+		case AbstractConnection::ctCircle:
+		{
+			CircleConnection * actualConnection = dynamic_cast<CircleConnection *>(connection);
+			coordinate_t midU = actualConnection->centerPoint()->u();
+			coordinate_t midV = actualConnection->centerPoint()->v();
+			coordinate_t midW = actualConnection->centerPoint()->w();
+			coordinate_t radius = actualConnection->radius();
+			CircleConnection::eCircleOrientation orientation = actualConnection->orientation();
+
+			unsigned long long ct{ 0 };
+			coordinate_t lU, lV, lW;
+			coordinate_t fU, fV, fW;
+
+			switch (orientation)
+			{
+			case rbeCore::CircleConnection::coUV:
+			{
+				for (int i = 0; i < m_circleSegments; i++)
+				{
+					if (ct++ > 1) {
+						_list.push_back({ lU, lV, lW });
+					}
+
+					float theta = 2.f * 3.1415926f * float(i) / float(m_circleSegments);
+					float u = radius * cosf(theta);
+					float v = radius * sinf(theta);
+
+					lU = midU + u;
+					lV = midV + v;
+					lW = midW;
+					_list.push_back({ lU, lV, lW });
+
+					if (ct == 1) {
+						fU = lU;
+						fV = lV;
+						fW = lW;
+					}
+				}
+				if (ct > 0) {
+					_list.push_back({ lU, lV, lW });
+					_list.push_back({ fU, fV, fW });
+				}
+			}
+			break;
+			case rbeCore::CircleConnection::coUW:
+			{
+				for (int i = 0; i < m_circleSegments; i++)
+				{
+					if (ct++ > 1) {
+						_list.push_back({ lU, lV, lW });
+					}
+
+					float theta = 2.f * 3.1415926f * float(i) / float(m_circleSegments);
+					float u = radius * cosf(theta);
+					float w = radius * sinf(theta);
+
+					lU = midU + u;
+					lV = midV;
+					lW = midW + w;
+					_list.push_back({ lU, lV, lW });
+
+					if (ct == 1) {
+						fU = lU;
+						fV = lV;
+						fW = lW;
+					}
+				}
+				if (ct > 0) {
+					_list.push_back({ lU, lV, lW });
+					_list.push_back({ fU, fV, fW });
+				}
+			}
+			break;
+			case rbeCore::CircleConnection::coVW:
+			{
+				for (int i = 0; i < m_circleSegments; i++)
+				{
+					if (ct++ > 1) {
+						_list.push_back({ lU, lV, lW });
+					}
+
+					float theta = 2.f * 3.1415926f * float(i) / float(m_circleSegments);
+					float v = radius * cosf(theta);
+					float w = radius * sinf(theta);
+
+					lU = midU;
+					lV = midV + v;
+					lW = midW + w;
+					_list.push_back({ lU, lV, lW });
+
+					if (ct == 1) {
+						fU = lU;
+						fV = lV;
+						fW = lW;
+					}
+				}
+				if (ct > 0) {
+					_list.push_back({ lU, lV, lW });
+					_list.push_back({ fU, fV, fW });
+				}
+			}
+			break;
+			default:
+				rbeAssert(0, "Invalid circle orientation");
+				break;
+			}
+		}
+		break;
+		default:
+			rbeAssert(0, "Not implemented connection type");
+			break;
+		}
+	}
 
 }
