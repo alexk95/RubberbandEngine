@@ -30,7 +30,7 @@ CALL "%RUBBERBAND_ENGINE_OSG%\setupWrapperEnvironment.bat"
 ECHO Launching development enviroment
 
 REM Open project
-START "" "%DEVENV_ROOT%\devenv.exe" "%RUBBERBAND_ENGINE_OSG%\osgWrapper.vcxproj"
+START "" "%DEVENV_ROOT%\devenv.exe" "%RUBBERBAND_ENGINE_OSG%\RubberbandOsgWrapper.vcxproj"
 
 :END
 

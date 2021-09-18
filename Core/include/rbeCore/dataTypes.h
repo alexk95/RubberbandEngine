@@ -18,10 +18,12 @@
 #define RBE_API_EXPORT __declspec(dllimport)
 #endif // RUBBERBANDENGINECORE_EXPORTS
 
-#ifdef RBE_COORDINATE_TYPE_INT
-	typedef int coordinate_t;
+#if defined(RBE_COORDINATE_TYPE_INT)
+typedef int coordinate_t;
+#elif defined(RBE_COORDINATE_TYPE_DOUBLE)
+typedef double coordinate_t;
 #else
-	typedef double coordinate_t;
+typedef float coordinate_t;
 #endif // RBE_VALUE_TYPE_coordinate_t
 
 #ifdef _DEBUG

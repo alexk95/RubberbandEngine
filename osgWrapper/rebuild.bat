@@ -75,12 +75,12 @@ DEL buildLog_Summary.txt
 
 IF %DEBUG%==1 (
 	ECHO %TYPE_NAME% DEBUG
-	"%DEVENV_ROOT%\devenv.exe" "%RUBBERBAND_ENGINE_OSG%\osgWrapper.vcxproj" %TYPE% "Debug|x64" /Out buildLog_Debug.txt
+	"%DEVENV_ROOT%\devenv.exe" "%RUBBERBAND_ENGINE_OSG%\RubberbandOsgWrapper.vcxproj" %TYPE% "Debug|x64" /Out buildLog_Debug.txt
 )
 
 IF %RELEASE%==1 (
 	ECHO %TYPE_NAME% RELEASE
-	"%DEVENV_ROOT%\devenv.exe" "%RUBBERBAND_ENGINE_OSG%\osgWrapper.vcxproj" %TYPE% "Release|x64" /Out buildLog_Release.txt
+	"%DEVENV_ROOT%\devenv.exe" "%RUBBERBAND_ENGINE_OSG%\RubberbandOsgWrapper.vcxproj" %TYPE% "Release|x64" /Out buildLog_Release.txt
 ) 
 
 IF "%2"=="" (

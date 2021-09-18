@@ -16,12 +16,17 @@
 #include <rbeWrapper/rbeOsgWrapperDatatypes.h>
 #include <rbeCore/RubberbandEngine.h>
 
+namespace osg {
+	class Geode;
+	class Group;
+}
+
 namespace rbeWrapper {
 
 	class RBE_OSG_API_EXPORT RubberbandOsgEngine : public rbeCore::RubberbandEngine {
 	public:
 
-		RubberbandOsgEngine(coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
+		RubberbandOsgEngine(osg::Group * _parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
 		virtual ~RubberbandOsgEngine();
 
 		// ############################################################################################
@@ -44,8 +49,42 @@ namespace rbeWrapper {
 
 		virtual void applyCurrentStep(void) override;
 
+		// ############################################################################################
+
+		// Getter
+
+		osg::Geode * osgNode(void) { return m_node; }
+
+		float lineColorR(void) const { return m_r; }
+		float lineColorG(void) const { return m_g; }
+		float lineColorB(void) const { return m_b; }
+
+		bool isDepthTestActive(void) const { return m_depthTest; }
+
+		// ############################################################################################
+
+		// Setter
+
+		void setLineColor(float _r, float _g, float _b) { m_r = _r; m_g = _g; m_b = _b; }
+
+		void setDepthTestActive(bool _isActive) { m_depthTest = _isActive; }
+
 	private:
 
+		void cleanupOsgData(void);
+
+		void buildNode(void);
+
+		void updateNode(void);
+
+		osg::Group *	m_parentGroup;
+		osg::Geode *	m_node;
+
+		float			m_r;
+		float			m_g;
+		float			m_b;
+		bool			m_depthTest;
+		int				m_circleSegments;
 	};
 	
 }

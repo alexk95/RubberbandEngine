@@ -82,7 +82,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories>%OSG_ROOT%\include\;%QDIR%\include\;%R_JSON_ROOT%\include\;$(RUBBERBAND_ENGINE_CORE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSG_ROOT)\include\;%QDIR%\include\;$(R_JSON_ROOT)\include\;$(RUBBERBAND_ENGINE_CORE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
       <PreprocessorDefinitions>RBE_OSG_WRAPPER_PROJ_BUILD;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -102,7 +102,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories>%OSG_ROOT%\include\;%QDIR%\include\;%R_JSON_ROOT%\include\;$(RUBBERBAND_ENGINE_CORE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSG_ROOT)\include\;%QDIR%\include\;$(R_JSON_ROOT)\include\;$(RUBBERBAND_ENGINE_CORE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RBE_OSG_WRAPPER_PROJ_BUILD;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

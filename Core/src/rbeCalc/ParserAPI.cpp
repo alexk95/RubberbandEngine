@@ -139,7 +139,7 @@ AbstractItem * ParserAPI::parseFormula(rbeCore::RubberbandEngine * _engine, rbeC
 	}
 	else {
 		bool fail;
-		double v = rbeCore::toNumber<double>(_string, fail);
+		coordinate_t v = rbeCore::toNumber<coordinate_t>(_string, fail);
 		if (fail) {
 			rbeAssert(0, "Syntax error while parsing function");
 			return nullptr;

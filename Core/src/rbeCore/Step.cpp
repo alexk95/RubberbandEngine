@@ -293,10 +293,56 @@ void Step::setupFromJson(RubberbandEngine * _engine, const std::string& _json) {
 
 		}
 		else if (connectionType == RBE_JSON_VALUE_ConnectionType_Circle) {
+			// Member
+			if (!connection.HasMember(RBE_JSON_CONNECTION_CIRCLE_Midpoint)) {
+				rbeAssert(0, "Invalid JSON Format: Connection member \"" RBE_JSON_CONNECTION_CIRCLE_Midpoint "\" is missing @Step"); return;
+			}
+			if (!connection.HasMember(RBE_JSON_CONNECTION_CIRCLE_Orientation)) {
+				rbeAssert(0, "Invalid JSON Format: Connection member \"" RBE_JSON_CONNECTION_CIRCLE_Orientation "\" is missing @Step"); return;
+			}
+			if (!connection.HasMember(RBE_JSON_CONNECTION_CIRCLE_Radius)) {
+				rbeAssert(0, "Invalid JSON Format: Connection member \"" RBE_JSON_CONNECTION_CIRCLE_Radius "\" is missing @Step"); return;
+			}
+			if (!connection[RBE_JSON_CONNECTION_CIRCLE_Midpoint].IsString()) {
+				rbeAssert(0, "Invalid JSON Format: Connection member \"" RBE_JSON_CONNECTION_CIRCLE_Midpoint "\" is not a string @Step"); return;
+			}
+			if (!connection[RBE_JSON_CONNECTION_CIRCLE_Orientation].IsString()) {
+				rbeAssert(0, "Invalid JSON Format: Connection member \"" RBE_JSON_CONNECTION_CIRCLE_Orientation "\" is not a string @Step"); return;
+			}
+			if (!connection[RBE_JSON_CONNECTION_CIRCLE_Radius].IsString()) {
+				rbeAssert(0, "Invalid JSON Format: Connection member \"" RBE_JSON_CONNECTION_CIRCLE_Radius "\" is not a string @Step"); return;
+			}
 
 			// Data
 			CircleConnection * newConnection = new CircleConnection;
 			newConnection->setIgnoreInHistory(ignoreConnectionInHistory);
+			
+			std::string mid = connection[RBE_JSON_CONNECTION_CIRCLE_Midpoint].GetString();
+			std::string orient = connection[RBE_JSON_CONNECTION_CIRCLE_Orientation].GetString();
+			std::string radius = connection[RBE_JSON_CONNECTION_CIRCLE_Radius].GetString();
+
+			if (orient == RBE_JSON_VALUE_CircleOrientation_UV) {
+				newConnection->setOrientation(CircleConnection::coUV);
+			} else if (orient == RBE_JSON_VALUE_CircleOrientation_UW) {
+				newConnection->setOrientation(CircleConnection::coUW);
+			} else if (orient == RBE_JSON_VALUE_CircleOrientation_VW) {
+				newConnection->setOrientation(CircleConnection::coVW);
+			}
+			else {
+				delete newConnection;
+				rbeAssert(0, "Data error: Invalid circle orientation provided @Step");
+				return;
+			}
+
+			eAxisDistance midOrient;
+			newConnection->setCenterpoint(rbeCalc::ParserAPI::parsePoint(_engine, this, mid, midOrient));
+			if (midOrient != dAll) {
+				delete newConnection;
+				rbeAssert(0, "Data error: Centerpoint must not contain axis specifier @Step");
+				return;
+			}
+			newConnection->setRadius(rbeCalc::ParserAPI::parseFormula(_engine, this, radius));
+
 			m_data->connections.push_back(newConnection);
 		}
 		else if (connectionType == RBE_JSON_VALUE_ConnectionType_History) {

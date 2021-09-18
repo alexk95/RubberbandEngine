@@ -31,7 +31,7 @@ coordinate_t PointDistanceOperator::value(void) const {
 		return m_lhv->distance(*m_rhv, m_axis);
 	}
 	else {
-		double d;
+		coordinate_t d;
 		switch (m_axis)
 		{
 		case rbeCore::dAll: return m_lhv->distance(*m_rhv, m_axis);

@@ -57,6 +57,15 @@
 //! Type: String (Reference to Point)
 #define RBE_JSON_CONNECTION_LINE_To "To"
 
+//! Type: String (Reference to Point)
+#define RBE_JSON_CONNECTION_CIRCLE_Midpoint "Midpoint"
+
+//! Type: String (Formula, see documentation)
+#define RBE_JSON_CONNECTION_CIRCLE_Radius "Radius"
+
+//! Type: String (UV, UW, VW)
+#define RBE_JSON_CONNECTION_CIRCLE_Orientation "Orientation"
+
 // ##############################################################
 
 //! Used to specify a step projection for the UV axis
@@ -73,6 +82,15 @@
 
 //! Used to specify the connection type as a history connection
 #define RBE_JSON_VALUE_ConnectionType_History "History"
+
+//! Used to specify the circle orientation to the UV axis
+#define RBE_JSON_VALUE_CircleOrientation_UV "UV"
+
+//! Used to specify the circle orientation to the UW axis
+#define RBE_JSON_VALUE_CircleOrientation_UW "UW"
+
+//! Used to specify the circle orientation to the VW axis
+#define RBE_JSON_VALUE_CircleOrientation_VW "VW"
 
 // ##############################################################
 

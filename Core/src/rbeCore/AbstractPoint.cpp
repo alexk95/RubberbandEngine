@@ -25,7 +25,7 @@ coordinate_t AbstractPoint::distance(const AbstractPoint& _other, eAxisDistance 
 	switch (_axis)
 	{
 	case rbeCore::dAll:
-		d = pow(pow(this->u() - _other.u(), 2) + pow(this->v() - _other.v(), 2) + pow(this->w() - _other.w(), 2), .5);
+		d = (coordinate_t)pow(pow(this->u() - _other.u(), 2) + pow(this->v() - _other.v(), 2) + pow(this->w() - _other.w(), 2), .5);
 		break;
 	case rbeCore::dU: d = this->u() - _other.u(); break;
 	case rbeCore::dV: d = this->v() - _other.v(); break;
