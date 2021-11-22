@@ -19,8 +19,10 @@
 #include <rbeCore/LineConnection.h>
 #include <rbeCore/HistoryConnection.h>
 #include <rbeCore/CircleConnection.h>
+#include <rbeCore/Limit.h>
+#include <rbeCore/rbeAssert.h>
 
-#include <rbeCalc/AbstractItem.h>
+#include <rbeCalc/AbstractCalculationItem.h>
 #include <rbeCalc/ParserAPI.h>
 #include <rbeCalc/VariableValue.h>
 
@@ -31,13 +33,14 @@
 // C++ header
 #include <map>
 #include <vector>
-#include <cassert>
+#include <list>
 
 using namespace rbeCore;
 
 struct Step::sData {
 	std::map<int, Point *>				points;
 	std::vector<AbstractConnection *>	connections;
+	std::list<Limit *>					limits;
 };
 
 bool isJsonDocumentValid(rapidjson::Document& _doc) {
@@ -88,9 +91,13 @@ bool isJsonDocumentValid(rapidjson::Document& _doc) {
 }
 
 Step::Step()
-	: m_pointsOwned(true), m_id(0), m_projection(pUV), m_mayEndWithout(true)
+	: m_pointsOwned(true), m_id(0), m_projection(pUV), m_mayEndWithout(true), m_lastCurrent(nullptr)
 {
 	m_data = new sData;
+	m_lastCurrentU = new rbeCalc::VariableValue(0.f);
+	m_lastCurrentV = new rbeCalc::VariableValue(0.f);
+	m_lastCurrentW = new rbeCalc::VariableValue(0.f);
+	m_lastCurrent = new Point(m_lastCurrentU, m_lastCurrentV, m_lastCurrentW);
 }
 
 Step::~Step() {
@@ -102,7 +109,11 @@ Step::~Step() {
 	for (auto c : m_data->connections) {
 		delete c;
 	}
+	for (auto l : m_data->limits) {
+		delete l;
+	}
 	delete m_data;
+	delete m_lastCurrent;
 }
 
 // ###################################################################################
@@ -121,6 +132,14 @@ void Step::addPoint(Point * _p) {
 	}
 
 	m_data->points.insert_or_assign(_p->id(), _p);
+}
+
+void Step::addLimit(Limit * _limit) {
+	if (_limit == nullptr) {
+		rbeAssert(0, "nullptr provided as point @Step");
+		return;
+	}
+	m_data->limits.push_back(_limit);
 }
 
 void Step::setupFromJson(RubberbandEngine * _engine, const std::string& _json) {
@@ -154,7 +173,48 @@ void Step::setupFromJson(RubberbandEngine * _engine, const std::string& _json) {
 	// Limits
 	auto limitData = doc[RBE_JSON_STEP_Limits].GetArray();
 	for (rapidjson::SizeType i{ 0 }; i < limitData.Size(); i++) {
+		if (!limitData[i].IsObject()) {
+			rbeAssert(0, "Invalid JSON Format: Limit entry is not an object");
+			return;
+		}
+		auto l = limitData[i].GetObject();
 
+		// Check member
+		if (!l.HasMember(RBE_JSON_LIMIT_Axis)) {
+			rbeAssert(0, "Invalid JSON Format: Limit entry member \"" RBE_JSON_LIMIT_Axis "\" is missing @Step");
+			return;
+		}
+		if (!l.HasMember(RBE_JSON_LIMIT_Value)) {
+			rbeAssert(0, "Invalid JSON Format: Limit entry member \"" RBE_JSON_LIMIT_Value "\" is missing @Step");
+			return;
+		}
+
+		// Check datatypes
+		if (!l[RBE_JSON_LIMIT_Axis].IsString()) {
+			rbeAssert(0, "Invalid JSON Format: Limit entry member \"" RBE_JSON_LIMIT_Axis "\" is not a string @Step");
+			return;
+		}
+		if (!l[RBE_JSON_LIMIT_Value].IsString()) {
+			rbeAssert(0, "Invalid JSON Format: Limit entry member \"" RBE_JSON_LIMIT_Value "\" is not a string @Step");
+			return;
+		}
+
+		std::string axis = l[RBE_JSON_LIMIT_Axis].GetString();
+		AxisLimit actualAxis;
+		if (axis == RBE_JSON_VALUE_AxisLimit_Umax) { actualAxis = Umax; }
+		else if (axis == RBE_JSON_VALUE_AxisLimit_Umin) { actualAxis = Umin; }
+		else if (axis == RBE_JSON_VALUE_AxisLimit_Vmax) { actualAxis = Vmax; }
+		else if (axis == RBE_JSON_VALUE_AxisLimit_Vmin) { actualAxis = Vmin; }
+		else if (axis == RBE_JSON_VALUE_AxisLimit_Wmax) { actualAxis = Wmax; }
+		else if (axis == RBE_JSON_VALUE_AxisLimit_Wmin) { actualAxis = Wmin; }
+		else { rbeAssert(0, "Invalid JSON Format: Limit entry member \"" RBE_JSON_LIMIT_Axis "\" unknown value @Step"); return; }
+		
+		std::string valueFormula = l[RBE_JSON_LIMIT_Value].GetString();
+		rbeCalc::AbstractCalculationItem  * actualValue = rbeCalc::ParserAPI::parseFormula(_engine, this, valueFormula);
+		if (actualValue) {
+			Limit * newLimit = new Limit(actualAxis, actualValue);
+			m_data->limits.push_back(newLimit);
+		}
 	}
 
 	// Points
@@ -218,9 +278,9 @@ void Step::setupFromJson(RubberbandEngine * _engine, const std::string& _json) {
 		std::string formulaV = pt[RBE_JSON_Point_V].GetString();
 		std::string formulaW = pt[RBE_JSON_Point_W].GetString();
 
-		rbeCalc::AbstractItem * itmU = rbeCalc::ParserAPI::parseFormula(_engine, this, formulaU);
-		rbeCalc::AbstractItem * itmV = rbeCalc::ParserAPI::parseFormula(_engine, this, formulaV);
-		rbeCalc::AbstractItem * itmW = rbeCalc::ParserAPI::parseFormula(_engine, this, formulaW);
+		rbeCalc::AbstractCalculationItem * itmU = rbeCalc::ParserAPI::parseFormula(_engine, this, formulaU);
+		rbeCalc::AbstractCalculationItem * itmV = rbeCalc::ParserAPI::parseFormula(_engine, this, formulaV);
+		rbeCalc::AbstractCalculationItem * itmW = rbeCalc::ParserAPI::parseFormula(_engine, this, formulaW);
 
 		Point * newPoint = new Point(itmU, itmV, itmW);
 		newPoint->setId(pId);
@@ -322,11 +382,11 @@ void Step::setupFromJson(RubberbandEngine * _engine, const std::string& _json) {
 			std::string radius = connection[RBE_JSON_CONNECTION_CIRCLE_Radius].GetString();
 
 			if (orient == RBE_JSON_VALUE_CircleOrientation_UV) {
-				newConnection->setOrientation(CircleConnection::coUV);
+				newConnection->setOrientation(coUV);
 			} else if (orient == RBE_JSON_VALUE_CircleOrientation_UW) {
-				newConnection->setOrientation(CircleConnection::coUW);
+				newConnection->setOrientation(coUW);
 			} else if (orient == RBE_JSON_VALUE_CircleOrientation_VW) {
-				newConnection->setOrientation(CircleConnection::coVW);
+				newConnection->setOrientation(coVW);
 			}
 			else {
 				delete newConnection;
@@ -491,3 +551,26 @@ void Step::addConnectionsToList(std::list<AbstractConnection *>& _list, bool _is
 		}
 	}
 }
+
+void Step::adjustCoordinateToLimits(coordinate_t & _u, coordinate_t & _v, coordinate_t & _w) {
+	for (auto l : m_data->limits) {
+		switch (l->axis())
+		{
+		case Umin: if (_u < l->value()) { _u = l->value(); } break;
+		case Umax: if (_u > l->value()) { _u = l->value(); } break;
+		case Vmin: if (_v < l->value()) { _v = l->value(); } break;
+		case Vmax: if (_v > l->value()) { _v = l->value(); } break;
+		case Wmin: if (_w < l->value()) { _w = l->value(); } break;
+		case Wmax: if (_w > l->value()) { _w = l->value(); } break;
+		default: rbeAssert(0, "Unknown limit @Step");
+		}
+	}
+}
+
+void Step::setLastPosition(coordinate_t _u, coordinate_t _v, coordinate_t _w) {
+	m_lastCurrentU->setValue(_u);
+	m_lastCurrentV->setValue(_v);
+	m_lastCurrentW->setValue(_w);
+}
+
+AbstractPoint * Step::lastPosition(void) { return m_lastCurrent; }

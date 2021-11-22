@@ -19,7 +19,7 @@ namespace rbeCalc {
 
 	class RBE_API_EXPORT OperatorSubtract : public AbstractOperator {
 	public:
-		OperatorSubtract(AbstractItem * _lhv, AbstractItem * _rhv);
+		OperatorSubtract(AbstractCalculationItem * _lhv, AbstractCalculationItem * _rhv);
 		virtual ~OperatorSubtract() {}
 
 		virtual coordinate_t value(void) const override;

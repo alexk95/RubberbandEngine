@@ -13,16 +13,14 @@
  // RBE header
 #include <rbeCalc/PointReference.h>
 #include <rbeCore/Point.h>
-
-// C++ header
-#include <cassert>
+#include <rbeCore/rbeAssert.h>
 
 using namespace rbeCalc;
 
 PointReference::PointReference(rbeCore::AbstractPoint * _point, rbeCore::eAxis _axis)
 	: m_point(_point), m_axis(_axis) {
 	
-	assert(m_point);
+	rbeAssert(m_point, "nullptr provided @PointReference");
 }
 
 coordinate_t PointReference::value(void) const {
@@ -32,7 +30,7 @@ coordinate_t PointReference::value(void) const {
 	case rbeCore::V: return m_point->v();
 	case rbeCore::W: return m_point->w();
 	default:
-		assert(0);
+		rbeAssert(0, "Unknown axis @PointReference");
 		return 0.;
 	}
 }

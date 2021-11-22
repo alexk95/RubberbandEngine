@@ -16,6 +16,7 @@
 #include <rbeCore/NumericPoint.h>
 #include <rbeCore/Step.h>
 #include <rbeCore/jsonMember.h>
+#include <rbeCore/rbeAssert.h>
 
 // rapidjson
 #include <rapidjson/document.h>
@@ -24,7 +25,6 @@
 #include <rapidjson/stringbuffer.h>
 
 // C++ header
-#include <cassert>
 #include <map>
 #include <vector>
 #include <string>
@@ -209,6 +209,9 @@ void RubberbandEngine::replaceOrigin(coordinate_t _originU, coordinate_t _origin
 }
 
 void RubberbandEngine::updateCurrent(coordinate_t _currentU, coordinate_t _currentV, coordinate_t _currentW) {
+	if (hasStep(m_currentStep)) {
+		step(m_currentStep)->adjustCoordinateToLimits(_currentU, _currentV, _currentW);
+	}
 	m_current->set(_currentU, _currentV, _currentW);
 }
 

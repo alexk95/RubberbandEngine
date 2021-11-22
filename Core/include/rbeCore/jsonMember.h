@@ -68,6 +68,18 @@
 
 // ##############################################################
 
+// Limits
+
+//! Type: String (Umin, Umax, Vmin, Vmax, Wmin, Wmax)
+#define RBE_JSON_LIMIT_Axis "Axis"
+
+//! Type: String (Formula, see documentation)
+#define RBE_JSON_LIMIT_Value "Value"
+
+// ##############################################################
+
+// Constant values
+
 //! Used to specify a step projection for the UV axis
 #define RBE_JSON_VALUE_ProjectionUV "UV"
 
@@ -91,6 +103,24 @@
 
 //! Used to specify the circle orientation to the VW axis
 #define RBE_JSON_VALUE_CircleOrientation_VW "VW"
+
+//! Used to specify the axis limit
+#define RBE_JSON_VALUE_AxisLimit_Umin "Umin"
+
+//! Used to specify the axis limit
+#define RBE_JSON_VALUE_AxisLimit_Umax "Umax"
+
+//! Used to specify the axis limit
+#define RBE_JSON_VALUE_AxisLimit_Vmin "Vmin"
+
+//! Used to specify the axis limit
+#define RBE_JSON_VALUE_AxisLimit_Vmax "Vmax"
+
+//! Used to specify the axis limit
+#define RBE_JSON_VALUE_AxisLimit_Wmin "Wmin"
+
+//! Used to specify the axis limit
+#define RBE_JSON_VALUE_AxisLimit_Wmax "Wmax"
 
 // ##############################################################
 

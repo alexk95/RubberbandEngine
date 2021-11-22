@@ -15,7 +15,7 @@
 
 using namespace rbeCalc;
 
-OperatorSubtract::OperatorSubtract(AbstractItem * _lhv, AbstractItem * _rhv)
+OperatorSubtract::OperatorSubtract(AbstractCalculationItem * _lhv, AbstractCalculationItem * _rhv)
 	: AbstractOperator(_lhv, _rhv) {}
 
 coordinate_t OperatorSubtract::value(void) const {

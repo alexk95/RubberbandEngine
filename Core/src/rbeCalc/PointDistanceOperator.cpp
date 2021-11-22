@@ -13,17 +13,17 @@
 // RBE header
 #include <rbeCalc/PointDistanceOperator.h>
 #include <rbeCore/AbstractPoint.h>
+#include <rbeCore/rbeAssert.h>
 
 // C++ header
-#include <cassert>
 
 using namespace rbeCalc;
 
 PointDistanceOperator::PointDistanceOperator(rbeCore::AbstractPoint * _lhv, rbeCore::AbstractPoint * _rhv, rbeCore::eAxisDistance _axis, bool _axisDistanceAppliesToBothPoints)
 	: m_lhv(_lhv), m_rhv(_rhv), m_axis(_axis), m_axisDistanceAppliesToBothPoints(_axisDistanceAppliesToBothPoints) {
 
-	assert(m_lhv);
-	assert(m_rhv);
+	rbeAssert(m_lhv, "nullptr provided @PointDistanceOperator");
+	rbeAssert(m_rhv, "nullptr provided @PointDistanceOperator");
 }
 
 coordinate_t PointDistanceOperator::value(void) const {

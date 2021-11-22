@@ -13,9 +13,9 @@
 // RBE header
 #include <rbeCore/AbstractPoint.h>
 #include <rbeCore/jsonMember.h>
+#include <rbeCore/rbeAssert.h>
 
 // C++ header
-#include <cassert>
 #include <math.h>
 
 using namespace rbeCore;
@@ -61,7 +61,7 @@ coordinate_t AbstractPoint::distance(const AbstractPoint& _other, eAxisDistance 
 	}
 	break;
 	default:
-		assert(0);
+		rbeAssert(0, "Unknown axis distance @AbstractPoint");
 		d = 0;
 		break;
 	}

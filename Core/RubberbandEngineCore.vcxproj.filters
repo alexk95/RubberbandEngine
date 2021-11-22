@@ -81,11 +81,14 @@
     <ClCompile Include="src\rbeCore\CircleConnection.cpp">
       <Filter>Source Files\rbeCore</Filter>
     </ClCompile>
+    <ClCompile Include="src\rbeCore\RubberbandConfiguration.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rbeCore\Limit.cpp">
+      <Filter>Source Files\rbeCore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\rbeCalc\AbstractItem.h">
-      <Filter>Header Files\rbeCalc</Filter>
-    </ClInclude>
     <ClInclude Include="include\rbeCalc\PointReference.h">
       <Filter>Header Files\rbeCalc</Filter>
     </ClInclude>
@@ -144,6 +147,18 @@
       <Filter>Header Files\rbeCore</Filter>
     </ClInclude>
     <ClInclude Include="include\rbeCore\CircleConnection.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\RubberbandConfiguration.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\Limit.h">
+      <Filter>Header Files\rbeCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCalc\AbstractCalculationItem.h">
+      <Filter>Header Files\rbeCalc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rbeCore\rbeAssert.h">
       <Filter>Header Files\rbeCore</Filter>
     </ClInclude>
   </ItemGroup>

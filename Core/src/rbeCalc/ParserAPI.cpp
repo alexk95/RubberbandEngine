@@ -24,9 +24,9 @@
 #include <rbeCore/Step.h>
 #include <rbeCore/NumericPoint.h>
 #include <rbeCore/RubberbandEngine.h>
+#include <rbeCore/rbeAssert.h>
 
 // C++ header
-#include <cassert>
 #include <cctype>
 #include <algorithm>
 
@@ -87,7 +87,7 @@ PointDistanceOperator * parseDistanceOperator(rbeCore::RubberbandEngine * _engin
 	}
 }
 
-AbstractItem * ParserAPI::parseFormula(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _string) {
+AbstractCalculationItem * ParserAPI::parseFormula(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _string) {
 	if (_string.empty()) { return new VariableValue(0); }
 
 	size_t idx = _string.rfind('+');

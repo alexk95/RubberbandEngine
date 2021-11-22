@@ -16,7 +16,7 @@
 #include <rbeCore/AbstractConnection.h>
 
 namespace rbeCalc {
-	class AbstractItem;
+	class AbstractCalculationItem;
 }
 
 namespace rbeCore {
@@ -25,17 +25,11 @@ namespace rbeCore {
 
 	class RBE_API_EXPORT CircleConnection : public AbstractConnection {
 	public:
-		enum eCircleOrientation {
-			coUV,
-			coUW,
-			coVW
-		};
-
 		CircleConnection();
 		virtual ~CircleConnection();
 
 		// #######################################################################################################
-
+		
 		// Base class functions
 
 		virtual std::string debugInformation(const std::string& _prefix) override;
@@ -48,9 +42,9 @@ namespace rbeCore {
 
 		void setCenterpoint(AbstractPoint * _point) { m_centerPoint = _point; }
 
-		void setRadius(rbeCalc::AbstractItem * _radius);
+		void setRadius(rbeCalc::AbstractCalculationItem * _radius);
 
-		void setOrientation(eCircleOrientation _orientation) { m_orientation = _orientation; }
+		void setOrientation(CircleOrientation _orientation) { m_orientation = _orientation; }
 
 		// #######################################################################################################
 
@@ -60,15 +54,15 @@ namespace rbeCore {
 
 		coordinate_t radius(void) const;
 
-		eCircleOrientation orientation(void) const { return m_orientation; }
+		CircleOrientation orientation(void) const { return m_orientation; }
 
 		std::string orientationToString(void) const;
 
 	private:
 
-		AbstractPoint *				m_centerPoint;
-		rbeCalc::AbstractItem *		m_radius;
-		eCircleOrientation			m_orientation;
+		AbstractPoint *							m_centerPoint;
+		rbeCalc::AbstractCalculationItem *		m_radius;
+		CircleOrientation						m_orientation;
 
 		CircleConnection(CircleConnection&) = delete;
 		CircleConnection& operator = (CircleConnection&) = delete;

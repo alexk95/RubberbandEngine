@@ -12,13 +12,13 @@
 
 // RBE header
 #include <rbeCore/Point.h>
-#include <rbeCalc/AbstractItem.h>
+#include <rbeCalc/AbstractCalculationItem.h>
 
 using namespace rbeCore;
 
 Point::Point() : m_u(nullptr), m_v(nullptr), m_w(nullptr) {}
 
-Point::Point(rbeCalc::AbstractItem * _u, rbeCalc::AbstractItem * _v, rbeCalc::AbstractItem * _w) : m_u(_u), m_v(_v), m_w(_w) {}
+Point::Point(rbeCalc::AbstractCalculationItem * _u, rbeCalc::AbstractCalculationItem * _v, rbeCalc::AbstractCalculationItem * _w) : m_u(_u), m_v(_v), m_w(_w) {}
 
 Point::~Point() {
 	if (m_u) { delete m_u; }
@@ -30,17 +30,17 @@ Point::~Point() {
 
 // Setter
 
-void Point::replaceU(rbeCalc::AbstractItem * _u) {
+void Point::replaceU(rbeCalc::AbstractCalculationItem * _u) {
 	if (m_u) { delete m_u; }
 	m_u = _u;
 }
 
-void Point::replaceV(rbeCalc::AbstractItem * _v) {
+void Point::replaceV(rbeCalc::AbstractCalculationItem * _v) {
 	if (m_v) { delete m_v; }
 	m_v = _v;
 }
 
-void Point::replaceW(rbeCalc::AbstractItem * _w) {
+void Point::replaceW(rbeCalc::AbstractCalculationItem * _w) {
 	if (m_w) { delete m_w; }
 	m_w = _w;
 }

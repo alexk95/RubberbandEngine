@@ -1,5 +1,5 @@
 /*
- *	File:		AbstractItem.h
+ *	File:		AbstractCalculationItem.h
  *	Package:	rbeCalc
  *
  *  Created on: September 07, 2021
@@ -17,17 +17,17 @@
 
 namespace rbeCalc {
 
-	class RBE_API_EXPORT AbstractItem {
+	class RBE_API_EXPORT AbstractCalculationItem {
 	public:
-		AbstractItem() {}
-		virtual ~AbstractItem() {}
+		AbstractCalculationItem() {}
+		virtual ~AbstractCalculationItem() {}
 		
 		virtual coordinate_t value(void) const = 0;
 
 	private:
 
-		AbstractItem(AbstractItem&) = delete;
-		AbstractItem& operator = (AbstractItem&) = delete;
+		AbstractCalculationItem(AbstractCalculationItem&) = delete;
+		AbstractCalculationItem& operator = (AbstractCalculationItem&) = delete;
 	};
 
 }
