@@ -14,8 +14,9 @@
 #include <rbeCore/CircleConnection.h>
 #include <rbeCore/jsonMember.h>
 #include <rbeCore/AbstractPoint.h>
+#include <rbeCore/rbeAssert.h>
 
-#include <rbeCalc/AbstractItem.h>
+#include <rbeCalc/AbstractCalculationItem.h>
 
 // C++ header
 #include <cassert>
@@ -49,9 +50,9 @@ std::string rbeCore::CircleConnection::debugInformation(const std::string& _pref
 	ret.append(",\n").append(_prefix).append("\t\"" RBE_JSON_CONNECTION_CIRCLE_Orientation "\": \"");
 	switch (m_orientation)
 	{
-	case rbeCore::CircleConnection::coUV: ret.append(RBE_JSON_VALUE_CircleOrientation_UV "\""); break;
-	case rbeCore::CircleConnection::coUW: ret.append(RBE_JSON_VALUE_CircleOrientation_UW "\""); break;
-	case rbeCore::CircleConnection::coVW: ret.append(RBE_JSON_VALUE_CircleOrientation_VW "\""); break;
+	case rbeCore::coUV: ret.append(RBE_JSON_VALUE_CircleOrientation_UV "\""); break;
+	case rbeCore::coUW: ret.append(RBE_JSON_VALUE_CircleOrientation_UW "\""); break;
+	case rbeCore::coVW: ret.append(RBE_JSON_VALUE_CircleOrientation_VW "\""); break;
 	default:
 		rbeAssert(0, "Not implemented orientation type");
 		break;
@@ -79,7 +80,7 @@ void rbeCore::CircleConnection::addToJsonArray(RubberbandEngine * _engine, std::
 
 // Setter
 
-void rbeCore::CircleConnection::setRadius(rbeCalc::AbstractItem * _radius) {
+void rbeCore::CircleConnection::setRadius(rbeCalc::AbstractCalculationItem * _radius) {
 	if (m_radius) { delete m_radius; }
 	m_radius = _radius;
 }
@@ -100,9 +101,9 @@ coordinate_t rbeCore::CircleConnection::radius(void) const {
 std::string rbeCore::CircleConnection::orientationToString(void) const {
 	switch (m_orientation)
 	{
-	case rbeCore::CircleConnection::coUV: return RBE_JSON_VALUE_CircleOrientation_UV;
-	case rbeCore::CircleConnection::coUW: return RBE_JSON_VALUE_CircleOrientation_UW;
-	case rbeCore::CircleConnection::coVW: return RBE_JSON_VALUE_CircleOrientation_VW;
+	case rbeCore::coUV: return RBE_JSON_VALUE_CircleOrientation_UV;
+	case rbeCore::coUW: return RBE_JSON_VALUE_CircleOrientation_UW;
+	case rbeCore::coVW: return RBE_JSON_VALUE_CircleOrientation_VW;
 	default:
 		rbeAssert(0, "Not implemented orientation type");
 		return "";

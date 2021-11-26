@@ -19,31 +19,38 @@
 #include <rbeCore/LineConnection.h>
 #include <rbeCore/CircleConnection.h>
 #include <rbeCore/AbstractPoint.h>
+#include <rbeCore/rbeAssert.h>
 
 // osg header
 #include <osg/StateSet>
 #include <osg/Node>
 #include <osg/Geode>
-#include <osg/Group>
+#include <osg/Switch>
 #include <osg/Geometry>
 #include <osg/PolygonMode>
 #include <osg/LineWidth>
 
-// C++ header
-#include <cassert>
 
 using namespace rbeCore;
 
-rbeWrapper::RubberbandOsgWrapper::RubberbandOsgWrapper(osg::Group * _parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW)
+rbeWrapper::RubberbandOsgWrapper::RubberbandOsgWrapper(osg::Switch *_parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW)
 	: rbeCore::RubberbandEngine(_originU, _originV, _originW), m_parentGroup(_parentGroup), m_node(nullptr),
 	m_r(1.), m_g(0.), m_b(0.), m_depthTest(false), m_circleSegments(100)
 {
+	// Here we remove all potentially remaining items in the rubberband group
+	while (m_parentGroup->getNumChildren() > 0)
+	{
+		m_parentGroup->removeChild(0, 1);
+	}
+
 
 }
 
 rbeWrapper::RubberbandOsgWrapper::~RubberbandOsgWrapper() {
 	if (m_node) {
-		m_parentGroup->removeChild(m_node);
+		m_parentGroup->setChildValue(m_node, false);
+		//m_parentGroup->removeChild(m_node);
+		m_node = nullptr;
 	}
 }
 
@@ -97,7 +104,8 @@ void rbeWrapper::RubberbandOsgWrapper::applyCurrentStep(void) {
 
 void rbeWrapper::RubberbandOsgWrapper::cleanupOsgData(void) {
 	if (m_node) {
-		m_parentGroup->removeChild(m_node);
+		m_parentGroup->setChildValue(m_node, false);
+		//m_parentGroup->removeChild(m_node);
 		m_node = nullptr;
 	}
 }
@@ -116,13 +124,15 @@ void rbeWrapper::RubberbandOsgWrapper::buildNode(void) {
 		vertices->at(ct++).set(pt);
 	}
 
+	assert((ct / 2) * 2 == ct);
+
 	osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
 	colors->push_back(osg::Vec4(m_r, m_g, m_b, 1.0f));
 
 	// Create the geometry object to store the data
 	osg::ref_ptr<osg::Geometry> newGeometry = new osg::Geometry;
 
-	newGeometry->setVertexArray(vertices);
+	newGeometry->setVertexArray(vertices.get());
 
 	newGeometry->setColorArray(colors.get());
 	newGeometry->setColorBinding(osg::Geometry::BIND_OVERALL);
@@ -163,6 +173,12 @@ void rbeWrapper::RubberbandOsgWrapper::buildNode(void) {
 }
 
 void rbeWrapper::RubberbandOsgWrapper::updateNode(void) {
+	if (m_node == nullptr)
+	{
+		assert(0);
+		return;
+	}
+
 	osg::Geometry * geometry = dynamic_cast<osg::Geometry *>(m_node->getDrawable(0));
 	if (geometry) {
 		// Read connections and create edges list
@@ -176,7 +192,8 @@ void rbeWrapper::RubberbandOsgWrapper::updateNode(void) {
 			vertices->at(ct++).set(pt);
 		}
 
-		geometry->setVertexArray(vertices);
+		geometry->setVertexArray(vertices.get());
+		geometry->dirtyDisplayList();
 	}
 	else {
 		assert(0);
@@ -202,7 +219,7 @@ void rbeWrapper::RubberbandOsgWrapper::calculateEdges(std::list<osg::Vec3>& _lis
 			coordinate_t midV = actualConnection->centerPoint()->v();
 			coordinate_t midW = actualConnection->centerPoint()->w();
 			coordinate_t radius = actualConnection->radius();
-			CircleConnection::eCircleOrientation orientation = actualConnection->orientation();
+			CircleOrientation orientation = actualConnection->orientation();
 
 			unsigned long long ct{ 0 };
 			coordinate_t lU, lV, lW;
@@ -210,7 +227,7 @@ void rbeWrapper::RubberbandOsgWrapper::calculateEdges(std::list<osg::Vec3>& _lis
 
 			switch (orientation)
 			{
-			case rbeCore::CircleConnection::coUV:
+			case rbeCore::coUV:
 			{
 				for (int i = 0; i < m_circleSegments; i++)
 				{
@@ -239,7 +256,7 @@ void rbeWrapper::RubberbandOsgWrapper::calculateEdges(std::list<osg::Vec3>& _lis
 				}
 			}
 			break;
-			case rbeCore::CircleConnection::coUW:
+			case rbeCore::coUW:
 			{
 				for (int i = 0; i < m_circleSegments; i++)
 				{
@@ -268,7 +285,7 @@ void rbeWrapper::RubberbandOsgWrapper::calculateEdges(std::list<osg::Vec3>& _lis
 				}
 			}
 			break;
-			case rbeCore::CircleConnection::coVW:
+			case rbeCore::coVW:
 			{
 				for (int i = 0; i < m_circleSegments; i++)
 				{

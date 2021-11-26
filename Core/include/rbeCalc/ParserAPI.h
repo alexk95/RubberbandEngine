@@ -26,11 +26,11 @@ namespace rbeCore {
 
 namespace rbeCalc {
 
-	class AbstractItem;
+	class AbstractCalculationItem;
 
 	namespace ParserAPI {
 
-		RBE_API_EXPORT rbeCalc::AbstractItem * parseFormula(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _string);
+		RBE_API_EXPORT rbeCalc::AbstractCalculationItem * parseFormula(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _string);
 	
 		RBE_API_EXPORT rbeCore::AbstractPoint * parsePoint(rbeCore::RubberbandEngine * _engine, rbeCore::Step * _step, const std::string& _str, rbeCore::eAxisDistance& _distance);
 

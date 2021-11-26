@@ -13,26 +13,26 @@
 #pragma once
 
 // RBE header
-#include <rbeCalc/AbstractItem.h>
+#include <rbeCalc/AbstractCalculationItem.h>
 
 namespace rbeCalc {
 
-	class RBE_API_EXPORT AbstractOperator : public AbstractItem {
+	class RBE_API_EXPORT AbstractOperator : public AbstractCalculationItem {
 	public:
-		AbstractOperator(AbstractItem * _lhv = nullptr, AbstractItem * _rhv = nullptr);
+		AbstractOperator(AbstractCalculationItem * _lhv = nullptr, AbstractCalculationItem * _rhv = nullptr);
 		virtual ~AbstractOperator();
 
-		AbstractItem * left(void) { return m_lhv; }
+		AbstractCalculationItem * left(void) { return m_lhv; }
 
-		AbstractItem * right(void) { return m_rhv; }
+		AbstractCalculationItem * right(void) { return m_rhv; }
 
-		void replaceLeft(AbstractItem * _lhv);
+		void replaceLeft(AbstractCalculationItem * _lhv);
 
-		void replaceRight(AbstractItem * _rhv);
+		void replaceRight(AbstractCalculationItem * _rhv);
 
 	protected:
-		AbstractItem *		m_lhv;
-		AbstractItem *		m_rhv;
+		AbstractCalculationItem *		m_lhv;
+		AbstractCalculationItem *		m_rhv;
 
 	private:
 

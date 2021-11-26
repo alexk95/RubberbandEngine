@@ -14,9 +14,7 @@
 #include <rbeCore/LineConnection.h>
 #include <rbeCore/Point.h>
 #include <rbeCore/jsonMember.h>
-
-// C++ header
-#include <cassert>
+#include <rbeCore/rbeAssert.h>
 
 rbeCore::LineConnection::LineConnection() 
 	: AbstractConnection(ctLine), m_from(nullptr), m_to(nullptr)

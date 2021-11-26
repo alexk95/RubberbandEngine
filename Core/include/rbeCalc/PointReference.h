@@ -13,7 +13,7 @@
 #pragma once
 
 // RBE header
-#include <rbeCalc/AbstractItem.h>
+#include <rbeCalc/AbstractCalculationItem.h>
 
 namespace rbeCore {
 	class AbstractPoint;
@@ -21,7 +21,7 @@ namespace rbeCore {
 
 namespace rbeCalc {
 
-	class RBE_API_EXPORT PointReference : public AbstractItem {
+	class RBE_API_EXPORT PointReference : public AbstractCalculationItem {
 	public:
 		PointReference(rbeCore::AbstractPoint * _point, rbeCore::eAxis _axis);
 

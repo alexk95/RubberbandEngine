@@ -15,7 +15,7 @@
 
 using namespace rbeCalc;
 
-OperatorDivide::OperatorDivide(AbstractItem * _lhv, AbstractItem * _rhv)
+OperatorDivide::OperatorDivide(AbstractCalculationItem * _lhv, AbstractCalculationItem * _rhv)
 	: AbstractOperator(_lhv, _rhv) {}
 
 coordinate_t OperatorDivide::value(void) const {

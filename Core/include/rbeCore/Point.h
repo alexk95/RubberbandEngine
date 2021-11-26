@@ -16,7 +16,7 @@
 #include <rbeCore/AbstractPoint.h>
 
 namespace rbeCalc {
-	class AbstractItem;
+	class AbstractCalculationItem;
 }
 
 namespace rbeCore {
@@ -25,18 +25,18 @@ namespace rbeCore {
 	public:
 
 		Point();
-		Point(rbeCalc::AbstractItem * _u, rbeCalc::AbstractItem * _v, rbeCalc::AbstractItem * _w);
+		Point(rbeCalc::AbstractCalculationItem * _u, rbeCalc::AbstractCalculationItem * _v, rbeCalc::AbstractCalculationItem * _w);
 		virtual ~Point();
 
 		// #################################################################################################
 
 		// Setter
 
-		void replaceU(rbeCalc::AbstractItem * _u);
+		void replaceU(rbeCalc::AbstractCalculationItem * _u);
 
-		void replaceV(rbeCalc::AbstractItem * _v);
+		void replaceV(rbeCalc::AbstractCalculationItem * _v);
 
-		void replaceW(rbeCalc::AbstractItem * _w);
+		void replaceW(rbeCalc::AbstractCalculationItem * _w);
 
 		// #################################################################################################
 
@@ -49,9 +49,9 @@ namespace rbeCore {
 		virtual coordinate_t w(void) const override;
 
 	private:
-		rbeCalc::AbstractItem *		m_u;
-		rbeCalc::AbstractItem *		m_v;
-		rbeCalc::AbstractItem *		m_w;
+		rbeCalc::AbstractCalculationItem *		m_u;
+		rbeCalc::AbstractCalculationItem *		m_v;
+		rbeCalc::AbstractCalculationItem *		m_w;
 
 		Point(Point&) = delete;
 		Point& operator = (Point&) = delete;

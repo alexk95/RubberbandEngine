@@ -26,15 +26,6 @@ typedef double coordinate_t;
 typedef float coordinate_t;
 #endif // RBE_VALUE_TYPE_coordinate_t
 
-#ifdef _DEBUG
-	//! Requires: #include <cassert>
-#define rbeAssert(___expression, ___message) (void)((!!(___expression)) || (_wassert(_CRT_WIDE(#___expression) L"\n\n" _CRT_WIDE(___message), _CRT_WIDE(__FILE__), (unsigned)__LINE__), 0))
-#else
-	//! Requires: #include <cassert>
-#define rbeAssert(___expression, ___message)
-#endif // _DEBUG
-
-
 namespace rbeCore {
 
 	enum eAxis {
@@ -54,5 +45,25 @@ namespace rbeCore {
 		dVU,
 		dWU,
 		dWV
+	};
+
+	enum DefaultPoint {
+		ORIGIN,
+		CURRENT
+	};
+
+	enum CircleOrientation {
+		coUV,
+		coUW,
+		coVW
+	};
+
+	enum AxisLimit {
+		Umin,
+		Umax,
+		Vmin,
+		Vmax,
+		Wmin,
+		Wmax
 	};
 }

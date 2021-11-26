@@ -15,19 +15,19 @@
 
 using namespace rbeCalc;
 
-AbstractOperator::AbstractOperator(AbstractItem * _lhv, AbstractItem * _rhv) : m_lhv(_lhv), m_rhv(_rhv) {}
+AbstractOperator::AbstractOperator(AbstractCalculationItem * _lhv, AbstractCalculationItem * _rhv) : m_lhv(_lhv), m_rhv(_rhv) {}
 
 AbstractOperator::~AbstractOperator() {
 	if (m_lhv) delete m_lhv;
 	if (m_rhv) delete m_rhv;
 }
 
-void AbstractOperator::replaceLeft(AbstractItem * _lhv) {
+void AbstractOperator::replaceLeft(AbstractCalculationItem * _lhv) {
 	if (m_lhv) delete m_lhv;
 	m_lhv = _lhv;
 }
 
-void AbstractOperator::replaceRight(AbstractItem * _rhv) {
+void AbstractOperator::replaceRight(AbstractCalculationItem * _rhv) {
 	if (m_rhv) delete m_rhv;
 	m_rhv = _rhv;
 }

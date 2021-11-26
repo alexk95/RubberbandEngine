@@ -15,7 +15,7 @@
 
 using namespace rbeCalc;
 
-OperatorMultiply::OperatorMultiply(AbstractItem * _lhv, AbstractItem * _rhv)
+OperatorMultiply::OperatorMultiply(AbstractCalculationItem * _lhv, AbstractCalculationItem * _rhv)
 	: AbstractOperator(_lhv, _rhv) {}
 
 coordinate_t OperatorMultiply::value(void) const {

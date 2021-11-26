@@ -21,7 +21,7 @@
 
 namespace osg {
 	class Geode;
-	class Group;
+	class Switch;
 }
 
 namespace rbeWrapper {
@@ -29,7 +29,7 @@ namespace rbeWrapper {
 	class RBE_OSG_API_EXPORT RubberbandOsgWrapper : public rbeCore::RubberbandEngine {
 	public:
 
-		RubberbandOsgWrapper(osg::Group * _parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
+		RubberbandOsgWrapper(osg::Switch *_parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW);
 		virtual ~RubberbandOsgWrapper();
 
 		// ############################################################################################
@@ -83,8 +83,8 @@ namespace rbeWrapper {
 
 		void updateNode(void);
 
-		osg::Group *	m_parentGroup;
-		osg::Geode *	m_node;
+		osg::Switch *m_parentGroup;
+		osg::Geode  *m_node;
 
 		float			m_r;
 		float			m_g;

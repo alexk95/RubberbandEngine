@@ -12,11 +12,11 @@
 
 #pragma once
 
-#include <rbeCalc/AbstractItem.h>
+#include <rbeCalc/AbstractCalculationItem.h>
 
 namespace rbeCalc {
 
-	class RBE_API_EXPORT VariableValue : public AbstractItem {
+	class RBE_API_EXPORT VariableValue : public AbstractCalculationItem {
 	public:
 		VariableValue() {}
 		VariableValue(coordinate_t _v) : m_value(_v) {}

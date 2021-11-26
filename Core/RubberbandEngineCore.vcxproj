@@ -24,14 +24,16 @@
     <ClCompile Include="src\rbeCore\AbstractConnection.cpp" />
     <ClCompile Include="src\rbeCore\CircleConnection.cpp" />
     <ClCompile Include="src\rbeCore\HistoryConnection.cpp" />
+    <ClCompile Include="src\rbeCore\Limit.cpp" />
     <ClCompile Include="src\rbeCore\LineConnection.cpp" />
     <ClCompile Include="src\rbeCore\NumericPoint.cpp" />
     <ClCompile Include="src\rbeCore\Point.cpp" />
+    <ClCompile Include="src\rbeCore\RubberbandConfiguration.cpp" />
     <ClCompile Include="src\rbeCore\RubberbandEngine.cpp" />
     <ClCompile Include="src\rbeCore\Step.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\rbeCalc\AbstractItem.h" />
+    <ClInclude Include="include\rbeCalc\AbstractCalculationItem.h" />
     <ClInclude Include="include\rbeCalc\AbstractOperator.h" />
     <ClInclude Include="include\rbeCalc\ParserAPI.h" />
     <ClInclude Include="include\rbeCalc\OperatorAdd.h" />
@@ -47,9 +49,12 @@
     <ClInclude Include="include\rbeCore\dataTypes.h" />
     <ClInclude Include="include\rbeCore\HistoryConnection.h" />
     <ClInclude Include="include\rbeCore\jsonMember.h" />
+    <ClInclude Include="include\rbeCore\Limit.h" />
     <ClInclude Include="include\rbeCore\LineConnection.h" />
     <ClInclude Include="include\rbeCore\NumericPoint.h" />
     <ClInclude Include="include\rbeCore\Point.h" />
+    <ClInclude Include="include\rbeCore\rbeAssert.h" />
+    <ClInclude Include="include\rbeCore\RubberbandConfiguration.h" />
     <ClInclude Include="include\rbeCore\RubberbandEngine.h" />
     <ClInclude Include="include\rbeCore\Step.h" />
   </ItemGroup>
