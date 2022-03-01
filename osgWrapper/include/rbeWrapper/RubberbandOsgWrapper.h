@@ -46,8 +46,12 @@ namespace rbeWrapper {
 
 		virtual void clear(void) override;
 
+		//! @brief Will enable the Origin pick mode
+		//! The origin pick mode is allowing the user the select the origin of the geometry
 		virtual void activateStepOne(void) override;
 
+		//! @brief Will activate the next step
+		//! Can be used to activate the first step if the origin should not be picked by the used.
 		virtual void activateNextStep(void) override;
 
 		virtual void applyCurrentStep(void) override;
@@ -81,11 +85,16 @@ namespace rbeWrapper {
 
 		void buildNode(void);
 
+		void buildOriginNode(void);
+
 		void updateNode(void);
+
+		void updateOriginNode(void);
 
 		osg::Switch *m_parentGroup;
 		osg::Geode  *m_node;
 
+		bool			m_pickOriginEnabled;
 		float			m_r;
 		float			m_g;
 		float			m_b;

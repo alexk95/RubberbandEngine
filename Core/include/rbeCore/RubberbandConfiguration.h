@@ -43,9 +43,15 @@ namespace rbeCore {
 
 		// Defaults
 
-		void setToDefaultCube(void);
+		void setToDefaultCuboid(void);
 
 		void setToDefaultCylinder(void);
+
+		void setToDefaultSphere(void);
+
+		void setToDefaultTorus(void);
+
+		void setToDefaultCone(void);
 
 		// #############################################################################################
 

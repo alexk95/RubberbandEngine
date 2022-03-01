@@ -20,6 +20,7 @@
 #include <rbeCore/CircleConnection.h>
 #include <rbeCore/AbstractPoint.h>
 #include <rbeCore/rbeAssert.h>
+#include <rbeCore/NumericPoint.h>
 
 // osg header
 #include <osg/StateSet>
@@ -29,13 +30,13 @@
 #include <osg/Geometry>
 #include <osg/PolygonMode>
 #include <osg/LineWidth>
-
+#include <osg/ShapeDrawable>
 
 using namespace rbeCore;
 
 rbeWrapper::RubberbandOsgWrapper::RubberbandOsgWrapper(osg::Switch *_parentGroup, coordinate_t _originU, coordinate_t _originV, coordinate_t _originW)
 	: rbeCore::RubberbandEngine(_originU, _originV, _originW), m_parentGroup(_parentGroup), m_node(nullptr),
-	m_r(1.), m_g(0.), m_b(0.), m_depthTest(false), m_circleSegments(100)
+	m_r(1.), m_g(0.), m_b(0.), m_depthTest(false), m_circleSegments(100), m_pickOriginEnabled(false)
 {
 	// Here we remove all potentially remaining items in the rubberband group
 	while (m_parentGroup->getNumChildren() > 0)
@@ -84,18 +85,31 @@ void rbeWrapper::RubberbandOsgWrapper::clear(void) {
 }
 
 void rbeWrapper::RubberbandOsgWrapper::activateStepOne(void) {
-	RubberbandEngine::activateStepOne();
+	m_pickOriginEnabled = true;
 	buildNode();
 }
 
 void rbeWrapper::RubberbandOsgWrapper::activateNextStep(void) {
-	RubberbandEngine::activateNextStep();
+	if (m_pickOriginEnabled) {
+		m_pickOriginEnabled = false;
+		RubberbandEngine::replaceOrigin(current()->u(), current()->v(), current()->w());
+		RubberbandEngine::activateStepOne();
+	}
+	else {
+		RubberbandEngine::activateNextStep();
+	}
+	
 	buildNode();
 }
 
 void rbeWrapper::RubberbandOsgWrapper::applyCurrentStep(void) {
-
-	RubberbandEngine::applyCurrentStep();
+	if (m_pickOriginEnabled) {
+		replaceOrigin(current()->u(), current()->v(), current()->w());
+	}
+	else {
+		RubberbandEngine::applyCurrentStep();
+	}
+	
 }
 
 // ############################################################################################
@@ -112,6 +126,9 @@ void rbeWrapper::RubberbandOsgWrapper::cleanupOsgData(void) {
 
 void rbeWrapper::RubberbandOsgWrapper::buildNode(void) {
 	cleanupOsgData();
+
+	if (m_pickOriginEnabled) { buildOriginNode(); return; }
+	
 
 	// Read connections and create edges list
 	std::list<osg::Vec3> edgesList;
@@ -137,7 +154,58 @@ void rbeWrapper::RubberbandOsgWrapper::buildNode(void) {
 	newGeometry->setColorArray(colors.get());
 	newGeometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-	newGeometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES, 0, ct));
+	newGeometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::Mode::LINES, 0, ct));
+
+	//	if (depthTest) {
+	//		osg::ref_ptr<osg::Material> matEdges = new osg::Material;
+	//		this->setMaterialProperties(matEdges, r, g, b);
+	//		newGeometry->getOrCreateStateSet()->setAttribute(matEdges.get());
+	//	}
+
+		// Now create the geometry node and assign the drawable
+	m_node = new osg::Geode;
+	m_node->addDrawable(newGeometry);
+
+	// Set the display attributes for the edges geometry
+	osg::StateSet *ss = m_node->getOrCreateStateSet();
+
+	//osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc;
+	//blendFunc->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//ss->setAttributeAndModes(blendFunc);
+
+	ss->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+	ss->setMode(GL_BLEND, osg::StateAttribute::OFF);
+	ss->setAttributeAndModes(new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE));
+	ss->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
+	ss->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
+
+	if (!m_depthTest)
+	{
+		ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+		ss->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+	}
+
+	m_parentGroup->addChild(m_node);
+}
+
+void rbeWrapper::RubberbandOsgWrapper::buildOriginNode(void) {
+	// Create array
+	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(1);
+	vertices->at(0).set(osg::Vec3(current()->u(), current()->v(), current()->w()));
+
+	osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+	colors->push_back(osg::Vec4(m_r, m_g, m_b, 1.0f));
+
+	// Create the geometry object to store the data
+	osg::ref_ptr<osg::Geometry> newGeometry = new osg::Geometry;
+
+	newGeometry->setVertexArray(vertices.get());
+
+	newGeometry->setColorArray(colors.get());
+	newGeometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+	newGeometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::Mode::POINTS, 0, 1));
 
 	//	if (depthTest) {
 	//		osg::ref_ptr<osg::Material> matEdges = new osg::Material;
@@ -179,6 +247,11 @@ void rbeWrapper::RubberbandOsgWrapper::updateNode(void) {
 		return;
 	}
 
+	if (m_pickOriginEnabled) {
+		updateOriginNode();
+		return;
+	}
+
 	osg::Geometry * geometry = dynamic_cast<osg::Geometry *>(m_node->getDrawable(0));
 	if (geometry) {
 		// Read connections and create edges list
@@ -191,6 +264,21 @@ void rbeWrapper::RubberbandOsgWrapper::updateNode(void) {
 		for (auto pt : edgesList) {
 			vertices->at(ct++).set(pt);
 		}
+
+		geometry->setVertexArray(vertices.get());
+		geometry->dirtyDisplayList();
+	}
+	else {
+		assert(0);
+	}
+}
+
+void rbeWrapper::RubberbandOsgWrapper::updateOriginNode(void) {
+	osg::Geometry * geometry = dynamic_cast<osg::Geometry *>(m_node->getDrawable(0));
+	if (geometry) {
+		// Read connections and create edges list
+		osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(1);
+		vertices->at(0).set(osg::Vec3(current()->u(), current()->v(), current()->w()));
 
 		geometry->setVertexArray(vertices.get());
 		geometry->dirtyDisplayList();

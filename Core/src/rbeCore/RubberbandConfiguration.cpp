@@ -27,7 +27,7 @@ rbeCore::RubberbandConfiguration::~RubberbandConfiguration() {
 
 // #############################################################################################
 
-void rbeCore::RubberbandConfiguration::setToDefaultCube() {
+void rbeCore::RubberbandConfiguration::setToDefaultCuboid() {
 	clear();
 	*this
 		// Create step 1: The base
@@ -90,6 +90,143 @@ void rbeCore::RubberbandConfiguration::setToDefaultCylinder() {
 			cfgPoint(8, "$3.U", "$3.V", CURRENT) << cfgPoint(9, "$4.U", "$4.V", CURRENT) << cfgPoint(10, "$5.U", "$5.V", CURRENT) <<
 			cfgHistoryConnection(1) << cfgLineConnection(2, 7) << cfgLineConnection(3, 8) << cfgLineConnection(4, 9) << cfgLineConnection(5, 10) <<
 			cfgCircleConnection(6, "$6>$7", rbeCore::coUV, false))
+		;
+}
+
+void rbeCore::RubberbandConfiguration::setToDefaultSphere(void) {
+	clear();
+
+	*this
+		<< (cfgStep(cfgStep::UV, false) << 
+			cfgPoint(1, ORIGIN, ORIGIN, ORIGIN) <<
+			cfgPoint(2, "Origin.U-Current>Origin", ORIGIN, ORIGIN) << 
+			cfgPoint(3, ORIGIN, "Orgin.V-Current>Origin", ORIGIN) <<
+			cfgPoint(4, "Current>Origin", ORIGIN, ORIGIN) << 
+			cfgPoint(5, ORIGIN, "Current>Origin", ORIGIN) <<
+			cfgPoint(6, ORIGIN, ORIGIN, "$2.U>$1.U") << 
+			cfgPoint(7, ORIGIN, ORIGIN, "Origin.W-$6.W>Origin")	<<
+
+			cfgLineConnection(2, 4, true) << 
+			cfgLineConnection(3, 5, true) << 
+			cfgLineConnection(6, 7, true) << 
+
+			cfgCircleConnection(1, "$2>$1", rbeCore::coUV, false) << 
+			cfgCircleConnection(1, "$2>$1", rbeCore::coUW, false) << 
+			cfgCircleConnection(1, "$2>$1", rbeCore::coVW, false))
+		;
+}
+
+void rbeCore::RubberbandConfiguration::setToDefaultTorus(void){
+	clear();
+	
+	*this
+		<< (cfgStep(cfgStep::UV, false) <<
+			// points for first circle
+			cfgPoint(1, ORIGIN, ORIGIN, ORIGIN) <<
+			cfgPoint(2, "Origin.U-Current>Origin", ORIGIN, ORIGIN) <<
+			cfgPoint(3, ORIGIN, "Origin.V-Current>Origin", ORIGIN) <<
+			cfgPoint(4, "Current>Origin", ORIGIN, ORIGIN)		   << 
+			cfgPoint(5, ORIGIN, "Current>Origin", ORIGIN)		   <<
+
+			// first circle on the UV level
+			cfgCircleConnection(1, "$2>$1", rbeCore::coUV, false))
+
+		<< (cfgStep(cfgStep::UV, true) <<
+			// points for second circle
+			cfgPoint(6, "Origin.U-Current>Origin", ORIGIN, ORIGIN) <<
+			cfgPoint(7, ORIGIN, "Origin.V-Current>Origin", ORIGIN) <<
+			cfgPoint(8, "Current>Origin", ORIGIN, ORIGIN)		   <<
+			cfgPoint(9, ORIGIN, "Current>Origin", ORIGIN)		   <<
+
+			// points for middle points of verticle points
+			// the id of the point represents between which two points 
+			//		the middle point for the vertical circle is e.g. 206 - between 2 and 6 
+			cfgPoint(206, "Origin.U-$6>$1/2-$2>$1/2", ORIGIN, ORIGIN) <<
+			cfgPoint(307, ORIGIN, "Origin.V-$7>$1/2-$3>$1/2", ORIGIN) <<
+			cfgPoint(408, "Origin.U+$6>$1/2+$2>$1/2", ORIGIN, ORIGIN) <<
+			cfgPoint(509, ORIGIN, "Origin.V+$9>$1/2+$5>$1/2", ORIGIN) <<
+
+			cfgHistoryConnection(1) <<
+
+			// second circle on the UV level
+			cfgCircleConnection(1, "$6>$1", rbeCore::coUV, false) <<
+			
+			// vertical circles
+			cfgCircleConnection(206, "$6>$206", rbeCore::coUW, false) << 
+			cfgCircleConnection(307, "$7>$307", rbeCore::coVW, false) << 
+			cfgCircleConnection(408, "$8>$408", rbeCore::coUW, false) <<
+			cfgCircleConnection(509, "$9>$509", rbeCore::coVW, false))
+		;
+}
+
+void rbeCore::RubberbandConfiguration::setToDefaultCone(void) {
+	clear();
+
+	*this
+		// first step: create the bottom circle
+		<< (cfgStep(cfgStep::UV, false) <<
+
+			// points for the bottom circle
+			cfgPoint(1, ORIGIN, ORIGIN, ORIGIN) <<
+			cfgPoint(2, "Origin.U-Current>Origin", ORIGIN, ORIGIN) <<
+			cfgPoint(3, ORIGIN, "Origin.V-Current>Origin", ORIGIN) <<
+			cfgPoint(4, "Origin.U+Current>Origin", ORIGIN, ORIGIN) <<
+			cfgPoint(5, ORIGIN, "Origin.V+Current>Origin", ORIGIN) <<
+
+			// points for small cross in the bottom circle
+			cfgPoint(100, "Origin.U-Current>Origin/3", "Origin.V-Current>Origin/3", ORIGIN) <<
+			cfgPoint(101, "Origin.U+Current>Origin/3", "Origin.V-Current>Origin/3", ORIGIN) <<
+			cfgPoint(102, "Origin.U+Current>Origin/3", "Origin.V+Current>Origin/3", ORIGIN) <<
+			cfgPoint(103, "Origin.U-Current>Origin/3", "Origin.V+Current>Origin/3", ORIGIN) <<
+
+			// lines for big cross in the bottom circle on the XY-axis
+			cfgLineConnection(2, 4, true) << cfgLineConnection(3, 5, true) <<
+
+			// lines for small cross in the bottom circle
+			cfgLineConnection(100, 102, true) << cfgLineConnection(101, 103, true) <<
+
+			cfgCircleConnection(1, "$2>$1", rbeCore::coUV, false))
+
+		// second step: decide the hight of the cone
+		<< (cfgStep(cfgStep::W, false) <<
+
+			// middle point of the top circle
+			cfgPoint(6, "$1.U", "$1.V", CURRENT) <<
+
+			// points for the top circle
+			cfgPoint(7, "$2.U", "$2.V", CURRENT)  <<
+			cfgPoint(8, "$3.U", "$3.V", CURRENT)  <<
+			cfgPoint(9, "$4.U", "$4.V", CURRENT)  <<
+			cfgPoint(10, "$5.U", "$5.V", CURRENT) <<
+
+			cfgHistoryConnection(1) <<
+
+			// vertical lines
+			cfgLineConnection(2, 7, true)  <<
+			cfgLineConnection(3, 8, true)  <<
+			cfgLineConnection(4, 9, true)  <<
+			cfgLineConnection(5, 10, true) <<
+
+			cfgCircleConnection(6, "$6>$7", rbeCore::coUV, true))
+
+		// third step: create the top circle of the cone
+		<< (cfgStep(cfgStep(cfgStep::UV, false)) <<
+
+			//points for the top circle
+			cfgPoint(11, "$6.U-Current>Origin", "$6.V", "$6.W") <<
+			cfgPoint(12, "$6.U", "$6.V-Current>Origin", "$6.W") <<
+			cfgPoint(13, "$6.U+Current>Origin", "$6.V", "$6.W") <<
+			cfgPoint(14, "$6.U", "$6.V+Current>Origin", "$6.W") <<
+			
+			cfgHistoryConnection(2) << 
+
+			//vertical lines
+			cfgLineConnection(2, 11, false) <<
+			cfgLineConnection(3, 12, false) <<
+			cfgLineConnection(4, 13, false) <<
+			cfgLineConnection(5, 14, false) <<
+			
+			cfgCircleConnection(6, "$6>$11", rbeCore::coUV, false))
 		;
 }
 
